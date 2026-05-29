@@ -1,0 +1,77 @@
+---
+// Comparison matrix — ported from comparison.html (.cmp).
+// First column (Markdown Better View) is highlighted (.us / --win).
+// Cell glyph mapping: ✓ → .y (green), ✗ → .n (muted), ? → .q (unknown),
+// descriptive text → .p (accent) for competitors, .y for the MBV column.
+import { columns, categories, rows } from '../data/comparison';
+
+const PRICE_ROW = 'Price (one-time)';
+
+// Decide the inner <span> class for a non-price cell.
+function cellClass(value: string, isUs: boolean): string {
+  if (value === '✓') return 'y';
+  if (value === '✗') return 'n';
+  if (value === '?') return 'q';
+  // Descriptive strings (e.g. "5 + dark", "dark/light", "older UI", "n/a").
+  // The MBV column reads as a win (green); competitors read as a note (accent).
+  return isUs ? 'y' : 'p';
+}
+---
+
+<div class="cmp">
+  <div class="head">
+    <h3>How it compares</h3>
+    <p>The focused, fast, modern Markdown viewer for macOS — at a fraction of the price.</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        {
+          columns.map((name, i) => (
+            <th class={i === 0 ? 'us' : undefined}>
+              <span class="nm">{name}</span>
+              <span class="ct">{categories[i]}</span>
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <td>{row.label}</td>
+            {row.cells.map((value, i) => {
+              const isUs = i === 0;
+              const isPrice = row.label === PRICE_ROW;
+              if (isPrice) {
+                // Free / non-priced cells stay plain; priced cells get .price.
+                const cls = [isUs ? 'us' : '', value === 'Free' ? '' : 'price']
+                  .filter(Boolean)
+                  .join(' ');
+                return <td class={cls || undefined}>{value}</td>;
+              }
+              const span = cellClass(value, isUs);
+              return (
+                <td class={isUs ? 'us' : (span === 'q' ? 'q' : undefined)}>
+                  {span === 'q' && !isUs ? value : <span class={span}>{value}</span>}
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <div class="foot">
+    <b>vs editors &amp; notes apps</b> — <b>Typora</b> ($14.99) and <b>Obsidian</b>
+    (free, personal) are excellent, but they <em>edit</em> and carry more weight.
+    Markdown Better View is a focused, fast <em>reader</em> — open, read, done. &nbsp;
+    <span style="color:var(--muted)"
+      >“?” = not stated by the vendor; final matrix verified before publish.</span
+    >
+  </div>
+</div>
