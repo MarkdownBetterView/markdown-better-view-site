@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
+import FeatureSection from '../components/FeatureSection.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
 ---
 
 <BaseLayout
@@ -11,5 +13,42 @@ import Hero from '../components/Hero.astro';
 >
   <Nav slot="nav" />
   <Hero />
+
+  <section id="features">
+    <FeatureSection
+      label="// live reload"
+      title="Save, and it’s already updated."
+      body="Edit in any editor — the view reloads instantly. No refresh, no flicker."
+      side="normal"
+      cap="video · live reload"
+      sz="~5s silent loop"
+    />
+    <FeatureSection
+      label="// themes"
+      title="Five themes. Real dark mode."
+      body="Dracula, Solarized & more — switch live; follows the system appearance."
+      side="alt"
+      cap="video · themes + dark"
+      sz="~5s loop"
+    />
+    <FeatureSection
+      label="// navigate"
+      title="Built for long documents."
+      body="Table of contents with scrollspy, instant find with match count, distraction-free reading mode."
+      side="normal"
+      cap="video · TOC + find"
+      sz="~6s loop"
+    />
+    <FeatureSection
+      label="// open"
+      title="A whole folder, in tabs."
+      body="Point it at a folder — every Markdown file opens as a native tab."
+      side="alt"
+      cap="video · folder → tabs"
+      sz="~5s loop"
+    />
+    <FeatureGrid />
+  </section>
+
   <Footer slot="footer" />
 </BaseLayout>
