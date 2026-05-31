@@ -9,24 +9,26 @@ export const columns = [
   'Markdown Better View',
   'MacMD Viewer',
   'Marked 2',
-  'Quick Look',
 ] as const;
 
 // Short category line under each column header (from comparison.html).
-export const categories = ['Viewer', 'Viewer', 'Previewer', 'Built-in'] as const;
+export const categories = ['Viewer', 'Viewer', 'Previewer'] as const;
 
 export const rows: { label: string; cells: Cell[] }[] = [
-  { label: 'Price (one-time)', cells: ['$9.99', '$19.99', '$13.99', 'Free'] },
-  { label: 'Mac App Store · sandboxed', cells: ['✓', '?', '✓', '✓'] },
-  { label: 'Live reload on save', cells: ['✓', '✓', '✓', '✗'] },
-  { label: 'Themes', cells: ['5 + dark', 'dark/light', 'CSS styles', '✗'] },
-  { label: 'Find (with match count)', cells: ['✓', '?', '✓', '✗'] },
-  { label: 'Math (KaTeX)', cells: ['✓', '?', '✓', '✗'] },
-  { label: 'Mermaid diagrams', cells: ['✓', '✓', '✓', '✗'] },
-  { label: 'Folder → native tabs', cells: ['✓', '?', '✗', '✗'] },
-  { label: 'Quick Look + thumbnail', cells: ['✓', '✓', '✗', 'n/a'] },
-  { label: 'Export PDF · Print', cells: ['✓', '?', '✓ +formats', '✗'] },
-  { label: 'Reading mode', cells: ['✓', '?', '✗', '✗'] },
-  { label: 'Native macOS · Apple Silicon', cells: ['✓', '?', 'older UI', '✓'] },
-  { label: 'Privacy · no tracking', cells: ['✓', '?', '✓', '✓'] },
+  { label: 'Price (one-time)', cells: ['$9.99', '$19.99', '$13.99'] },
+  { label: 'Mac App Store · sandboxed', cells: ['✓', '?', '✓'] },
+  { label: 'Apple Silicon native', cells: ['✓', '?', '?'] },
+  { label: 'Intel (universal binary)', cells: ['✓', '?', '?'] },
+  { label: 'macOS 15+', cells: ['✓', '?', '?'] },
+  { label: 'macOS 26 · Liquid Glass', cells: ['✓', '?', '?'] },
+  { label: 'Live reload on save', cells: ['✓', '✓', '✓'] },
+  { label: 'Themes', cells: ['5 + dark', 'dark/light', 'CSS styles'] },
+  { label: 'Find (with match count)', cells: ['✓', '?', '✓'] },
+  { label: 'Math (KaTeX)', cells: ['✓', '?', '✓'] },
+  { label: 'Mermaid diagrams', cells: ['✓', '✓', '✓'] },
+  { label: 'Folder → native tabs', cells: ['✓', '?', '✗'] },
+  { label: 'Quick Look + thumbnail', cells: ['✓', '✓', '✗'] },
+  { label: 'Export PDF · Print', cells: ['✓', '?', '✓ +formats'] },
+  { label: 'Reading mode', cells: ['✓', '?', '✗'] },
+  { label: 'Privacy · no tracking', cells: ['✓', '?', '✓'] },
 ];
