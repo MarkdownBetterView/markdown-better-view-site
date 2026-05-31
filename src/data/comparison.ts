@@ -17,10 +17,6 @@ export const categories = ['Viewer', 'Viewer', 'Previewer'] as const;
 export const rows: { label: string; cells: Cell[] }[] = [
   { label: 'Price (one-time)', cells: ['$9.99', '$19.99', '$13.99'] },
   { label: 'Mac App Store · sandboxed', cells: ['✓', '?', '✓'] },
-  { label: 'Apple Silicon native', cells: ['✓', '?', '?'] },
-  { label: 'Intel (universal binary)', cells: ['✓', '?', '?'] },
-  { label: 'macOS 15+', cells: ['✓', '?', '?'] },
-  { label: 'macOS 26 · Liquid Glass', cells: ['✓', '?', '?'] },
   { label: 'Live reload on save', cells: ['✓', '✓', '✓'] },
   { label: 'Themes', cells: ['5 + dark', 'dark/light', 'CSS styles'] },
   { label: 'Find (with match count)', cells: ['✓', '?', '✓'] },
