@@ -16,7 +16,7 @@ export const columns = [
 export const categories = ['Viewer', 'Viewer', 'Previewer', 'Built-in'] as const;
 
 export const rows: { label: string; cells: Cell[] }[] = [
-  { label: 'Price (one-time)', cells: ['$4.99', '$19.99', '$13.99', 'Free'] },
+  { label: 'Price (one-time)', cells: ['$9.99', '$19.99', '$13.99', 'Free'] },
   { label: 'Mac App Store · sandboxed', cells: ['✓', '?', '✓', '✓'] },
   { label: 'Live reload on save', cells: ['✓', '✓', '✓', '✗'] },
   { label: 'Themes', cells: ['5 + dark', 'dark/light', 'CSS styles', '✗'] },
@@ -27,6 +27,6 @@ export const rows: { label: string; cells: Cell[] }[] = [
   { label: 'Quick Look + thumbnail', cells: ['✓', '✓', '✗', 'n/a'] },
   { label: 'Export PDF · Print', cells: ['✓', '?', '✓ +formats', '✗'] },
   { label: 'Reading mode', cells: ['✓', '?', '✗', '✗'] },
-  { label: 'Native macOS 26 · Liquid Glass', cells: ['✓', '?', 'older UI', '✓'] },
+  { label: 'Native macOS · Apple Silicon', cells: ['✓', '?', 'older UI', '✓'] },
   { label: 'Privacy · no tracking', cells: ['✓', '?', '✓', '✓'] },
 ];
