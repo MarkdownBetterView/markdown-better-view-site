@@ -31,7 +31,7 @@ const isAlt = side === 'alt';
   <div class="fvid">
     {
       video ? (
-        <video muted loop autoplay playsinline preload="none" poster={`/videos/${video}.png`}>
+        <video muted loop autoplay playsinline preload="auto" poster={`/videos/${video}.png`}>
           <source src={`/videos/${video}.webm`} type="video/webm" />
           <source src={`/videos/${video}.mp4`} type="video/mp4" />
         </video>
