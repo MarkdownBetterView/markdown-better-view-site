@@ -31,7 +31,7 @@ const isAlt = side === 'alt';
   <div class="fvid">
     {
       video ? (
-        <video muted loop autoplay playsinline preload="auto" poster={`/videos/${video}.png`}>
+        <video class="autoplay-video" muted loop autoplay playsinline preload="auto" poster={`/videos/${video}.png`}>
           <source src={`/videos/${video}.webm`} type="video/webm" />
           <source src={`/videos/${video}.mp4`} type="video/mp4" />
         </video>
@@ -45,3 +45,22 @@ const isAlt = side === 'alt';
     }
   </div>
 </section>
+
+<script>
+  // The `autoplay` attribute alone is unreliable (browsers throttle it for
+  // off-screen / not-yet-decoded muted video). Kick playback explicitly: start
+  // each clip once it scrolls into view, pause it when it leaves to save CPU.
+  const vids = document.querySelectorAll<HTMLVideoElement>('video.autoplay-video');
+  const tryPlay = (v: HTMLVideoElement) => { v.muted = true; v.play().catch(() => {}); };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) tryPlay(v); else v.pause();
+      }
+    }, { threshold: 0.25 });
+    vids.forEach((v) => io.observe(v));
+  } else {
+    vids.forEach(tryPlay);
+  }
+</script>
