@@ -5,7 +5,7 @@
 // descriptive text → .p (accent) for competitors, .y for the MBV column.
 import { columns, categories, rows } from '../data/comparison';
 
-const PRICE_ROW = 'Price (one-time)';
+const PRICE_ROW = 'Price';
 
 // Decide the inner <span> class for a non-price cell.
 function cellClass(value: string, isUs: boolean): string {
@@ -69,7 +69,10 @@ function cellClass(value: string, isUs: boolean): string {
   <div class="foot">
     <b>vs editors &amp; notes apps</b> — <b>Typora</b> ($14.99) and <b>Obsidian</b>
     (free, personal) are excellent, but they <em>edit</em> and carry more weight.
-    Markdown Better View is a focused, fast <em>reader</em> — open, read, done. &nbsp;
+    Markdown Better View is a focused, fast <em>reader</em> — open, read, done.
+    A one-time <b>$9.99</b>, no subscription — <b>Marked 3</b> moved to
+    <b>$2.99/mo</b> (introductory; a one-time unlock is offered at an unstated
+    price). &nbsp;
     <span style="color:var(--muted)"
       >“?” = not stated by the vendor; final matrix verified before publish.</span
     >
