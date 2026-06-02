@@ -2,24 +2,24 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import ComparisonTable from '../components/ComparisonTable.astro';
+import ReadingModes from '../components/ReadingModes.astro';
 ---
 
 <BaseLayout
-  title="Comparison — Markdown Better View vs other macOS Markdown viewers"
-  description="How Markdown Better View compares to MacMD Viewer, Marked 2, and Quick Look — an honest, fact-based feature matrix for macOS Markdown viewers."
+  title="Editor, previewer, or viewer? — Markdown Better View for macOS"
+  description="Editors (Typora, Obsidian), previewers (Marked) and viewers do different jobs. See where Markdown Better View fits — the fast, native, one-time macOS Markdown viewer built for reading."
 >
   <Nav slot="nav" />
   <div class="wrap page">
     <div class="page-head">
-      <h1>How it compares</h1>
+      <h1>Three ways to read Markdown</h1>
       <p>
-        Apples-to-apples against the other macOS Markdown <em>viewers</em>; editors and
-        notes apps are noted separately. Every cell is verified against current
-        shipping versions before publishing.
+        Editors, previewers, and viewers do different jobs. Here's where Markdown
+        Better View fits — and why a focused <em>viewer</em> wins when you just want
+        to read.
       </p>
     </div>
-    <ComparisonTable />
+    <ReadingModes />
   </div>
   <Footer slot="footer" />
 </BaseLayout>
