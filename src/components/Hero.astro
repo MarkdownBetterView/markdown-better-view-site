@@ -1,0 +1,53 @@
+---
+// Landing hero — ported from hero-plus-features-v2.html
+// (.mbv-herowrap / .mbv-hero / .mbv-doc / .mbv-feats).
+// Subhead uses the expanded copy from the design spec.
+// CTA is the pre-launch state; at-launch variant is commented below.
+---
+
+<div class="mbv-herowrap">
+  <div class="mbv-hero">
+    <div>
+      <div class="mbv-titlerow">
+        <img class="mbv-ico" src="/icon.png" width="84" height="84" alt="Markdown Better View app icon" />
+        <h1 class="mbv-h1">See <code>Markdown</code> as it’s meant to look.</h1>
+      </div>
+      <p class="mbv-sub">Extremely fast — opens and renders documents instantly. Universal binary — native on Apple Silicon and Intel. Themes, live reload, table of contents, instant find, Quick Look.</p>
+
+      <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+
+      {/*
+        AT-LAUNCH CTA (swap in once the app ships on the Mac App Store):
+
+        <a class="mbv-cta" href="https://apps.apple.com/app/idXXXXXXXXX">
+          <img src="/mac-app-store-badge.svg" width="156" height="40" alt="Download on the Mac App Store" />
+        </a>
+        <span class="mbv-offer"><s>$9.99</s> $4.99 · launch price · limited time</span>
+      */}
+
+      <span class="mbv-note">Universal · macOS 15+ · sandboxed · no tracking</span>
+    </div>
+
+    <div class="mbv-doc">
+      <div class="dh1">Release Notes</div>
+      <p>Open a file and it just renders — beautifully, instantly.</p>
+      <blockquote>“Rendered, not raw.”</blockquote>
+      <div class="codeblk"><span class="c"># swift</span><br /><span class="k">let</span> joy = <span class="s">"GFM tables, math, mermaid"</span></div>
+      <ul>
+        <li>Live reload on save</li>
+        <li>Five themes · dark mode</li>
+      </ul>
+      <hr />
+    </div>
+  </div>
+
+  <div class="mbv-feats">
+    <span>Live reload</span>
+    <span>Themes + dark</span>
+    <span>Table of contents</span>
+    <span>Find</span>
+    <span>Quick Look</span>
+    <span>Folder → tabs</span>
+    <span>Export PDF</span>
+  </div>
+</div>

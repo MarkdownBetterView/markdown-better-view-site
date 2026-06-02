@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const updated = 'May 29, 2026';
+---
+
+<BaseLayout
+  title="Privacy Policy — Markdown Better View"
+  description="Markdown Better View collects no data and includes no tracking. The app is sandboxed and the website uses no analytics or cookies."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Privacy Policy</h1>
+      <p class="dated">Last updated: {updated}</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Markdown Better View is built around a simple principle: your documents are
+        yours. The app collects no personal data, contains no tracking or analytics,
+        and never sends your files anywhere.
+      </p>
+
+      <h2>The app</h2>
+      <ul>
+        <li>
+          <strong>No data collection.</strong> The app does not collect, transmit, or
+          sell any personal information.
+        </li>
+        <li>
+          <strong>No tracking.</strong> There are no analytics SDKs, advertising
+          identifiers, or third-party trackers of any kind.
+        </li>
+        <li>
+          <strong>Sandboxed.</strong> The app runs in the macOS App Sandbox and can
+          only access the files and folders you explicitly open or grant access to.
+        </li>
+        <li>
+          <strong>Stays on your Mac.</strong> Your documents are read locally and
+          rendered on your device. Remote network requests are blocked, so opening a
+          document never phones home.
+        </li>
+      </ul>
+
+      <p>
+        Consistent with the app’s privacy manifest
+        (<code>PrivacyInfo.xcprivacy</code>), the only declared API usage is reading
+        file timestamps (to detect changes for live reload) and storing your
+        preferences in macOS <code>UserDefaults</code> on your own device. Neither is
+        used for tracking, and neither leaves your Mac.
+      </p>
+
+      <h2>This website</h2>
+      <p>
+        markdownbetterview.com uses no analytics, no cookies, and no third-party
+        trackers. It is a static site served over HTTPS. We don’t know who visits or
+        what they read.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about privacy? Email
+        <a href="mailto:support@markdownbetterview.com">support@markdownbetterview.com</a>.
+      </p>
+    </div>
+  </div>
+  <Footer slot="footer" />
+</BaseLayout>

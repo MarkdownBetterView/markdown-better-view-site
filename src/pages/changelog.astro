@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+const entries = await getCollection('changelog');
+entries.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  }))
+);
+
+const dateFmt = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title="Changelog — Markdown Better View"
+  description="Release notes and version history for Markdown Better View, the fast native macOS Markdown viewer."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Changelog</h1>
+      <p>Release notes and version history.</p>
+    </div>
+
+    {
+      rendered.map(({ entry, Content }) => (
+        <article class="glass card">
+          <h2 style="margin:0 0 4px">
+            {entry.data.title ?? `Version ${entry.data.version}`}
+          </h2>
+          <p class="dated" style="margin:0 0 14px">
+            Version {entry.data.version} · {dateFmt.format(entry.data.date)}
+          </p>
+          <div class="prose">
+            <Content />
+          </div>
+        </article>
+      ))
+    }
+  </div>
+  <Footer slot="footer" />
+</BaseLayout>

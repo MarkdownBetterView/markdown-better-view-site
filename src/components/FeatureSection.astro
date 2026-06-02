@@ -1,0 +1,66 @@
+---
+// Feature section — ported from hero-plus-features-v2.html (.fsec).
+// Props: label (mono kicker), title, body, video (basename in /videos),
+// side ('alt' flips the layout so the video sits on the left), cap/sz
+// (placeholder caption + size hint shown until videos are recorded).
+//
+// Layout flip: the mockup's `.fsec.alt { direction:rtl }` rule reverses the
+// grid column order, so a fixed DOM order (text → media) renders text-left on
+// normal rows and media-left on alt rows. No need to reorder the markup.
+interface Props {
+  label: string;
+  title: string;
+  body: string;
+  video?: string;
+  side?: 'normal' | 'alt';
+  cap?: string;
+  sz?: string;
+}
+
+const { label, title, body, video, side = 'normal', cap, sz } = Astro.props;
+const isAlt = side === 'alt';
+---
+
+<section class={isAlt ? 'fsec alt' : 'fsec'}>
+  <div>
+    <p class="label">{label}</p>
+    <h3>{title}</h3>
+    <p>{body}</p>
+  </div>
+
+  <div class="fvid">
+    {
+      video ? (
+        <video class="autoplay-video" muted loop autoplay playsinline preload="auto" poster={`/videos/${video}.png`}>
+          <source src={`/videos/${video}.webm`} type="video/webm" />
+          <source src={`/videos/${video}.mp4`} type="video/mp4" />
+        </video>
+      ) : (
+        <Fragment>
+          <div class="play">▶</div>
+          {cap && <div class="cap">{cap}</div>}
+          {sz && <div class="sz">{sz}</div>}
+        </Fragment>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  // The `autoplay` attribute alone is unreliable (browsers throttle it for
+  // off-screen / not-yet-decoded muted video). Kick playback explicitly: start
+  // each clip once it scrolls into view, pause it when it leaves to save CPU.
+  const vids = document.querySelectorAll<HTMLVideoElement>('video.autoplay-video');
+  const tryPlay = (v: HTMLVideoElement) => { v.muted = true; v.play().catch(() => {}); };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting) tryPlay(v); else v.pause();
+      }
+    }, { threshold: 0.25 });
+    vids.forEach((v) => io.observe(v));
+  } else {
+    vids.forEach(tryPlay);
+  }
+</script>

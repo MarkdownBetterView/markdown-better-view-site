@@ -1,0 +1,27 @@
+---
+// "Everything else" grid — ported from hero-plus-features-v2.html
+// (.gsec / .ggrid / .gcell). 8 cells → two full rows of the 4-column grid.
+const cells = [
+  { ic: '∑', title: 'Math', sub: 'KaTeX' },
+  { ic: '◈', title: 'Mermaid', sub: 'diagrams' },
+  { ic: '⇩', title: 'Export PDF', sub: '& print' },
+  { ic: '🔗', title: 'Deep links', sub: 'mdbv://' },
+  { ic: '{ }', title: 'Code highlight', sub: '30+ languages' },
+  { ic: '🖼', title: 'Images', sub: 'lightbox' },
+  { ic: '🔒', title: 'Private', sub: 'sandboxed · no tracking' },
+  { ic: '􀣺', title: 'Universal', sub: 'Apple Silicon + Intel' },
+];
+---
+
+<section class="gsec">
+  <h3>Everything else</h3>
+  <div class="ggrid">
+    {cells.map((c) => (
+      <div class="gcell">
+        <div class="ic">{c.ic}</div>
+        <b>{c.title}</b>
+        <span>{c.sub}</span>
+      </div>
+    ))}
+  </div>
+</section>
