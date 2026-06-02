@@ -131,7 +131,8 @@ img{max-width:100%}
 .rm-who{font-size:13px;font-weight:600;color:var(--slate);margin:13px 0 9px;padding-top:11px;border-top:1px solid var(--line)}
 .rm-card.us .rm-who{color:var(--accent-deep);border-top-color:var(--winln)}
 .rm-card p{font-size:14px;line-height:1.55;color:var(--slate);margin:0}
-.rm-tag{align-self:flex-start;margin-top:14px;font-size:12px;font-weight:600;color:var(--accent-deep);background:#fff;border:1px solid var(--winln);padding:5px 11px;border-radius:999px}
+.rm-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.rm-tag{font-size:12px;font-weight:600;color:var(--accent-deep);background:#fff;border:1px solid var(--winln);padding:5px 11px;border-radius:999px}
 .rm-wedge{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:22px;padding:22px 26px;border:1px solid var(--winln);border-radius:14px;background:linear-gradient(160deg,var(--soft),#fff)}
 .rm-wedge-copy b{display:block;font-family:var(--serif);font-size:22px;letter-spacing:-.01em;color:var(--ink)}
 .rm-wedge-copy span{display:block;font-size:14px;color:var(--slate);margin-top:3px}

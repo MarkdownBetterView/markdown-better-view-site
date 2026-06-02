@@ -27,7 +27,7 @@ const modes = [
     job: 'open & read — done',
     who: 'Markdown Better View',
     body:
-      'Double-click a .md and see it rendered. Native, instant, one-time. Themes, table of contents, instant find, Quick Look, reading mode, and folder → tabs.',
+      'Double-click a .md and read it rendered — native, instant, one-time. Themes, table of contents, instant find, Quick Look, reading mode, folder → tabs. Editing in another app? Live reload re-renders on every save — so it does the previewer\'s job too, without pairing to an editor or a subscription.',
     us: true,
   },
 ];
@@ -42,7 +42,12 @@ const modes = [
           <div class="rm-job">{m.job}</div>
           <div class="rm-who">{m.who}</div>
           <p>{m.body}</p>
-          {m.us && <span class="rm-tag">one-time · $9.99</span>}
+          {m.us && (
+            <div class="rm-tags">
+              <span class="rm-tag">one-time · $9.99</span>
+              <span class="rm-tag">viewer + live previewer</span>
+            </div>
+          )}
         </div>
       ))
     }
@@ -57,7 +62,8 @@ const modes = [
   </div>
 
   <p class="rm-foot">
-    Typora, Obsidian, and Marked are excellent at their jobs — this page is about
-    the <em>reading</em> job, and that's the one Markdown Better View is built for.
+    Typora, Obsidian, and Marked are excellent at their jobs. Markdown Better View
+    is built for <em>reading</em> — and with live reload on save, it quietly covers
+    the previewing job too, one-time.
   </p>
 </section>
