@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+// "macmd viewer alternative" — both are native macOS viewers with a Quick Look
+// extension; our wedge is half the price + reading features MacMD doesn't
+// advertise. Facts verified June 2026 against macmdviewer.com; "?" where the
+// vendor doesn't state it.
+const faqs = [
+  { q: 'Is Markdown Better View cheaper than MacMD Viewer?', a: 'Yes. Markdown Better View is a one-time $9.99; MacMD Viewer is a one-time $19.99. Both are native viewers with no subscription.' },
+  { q: 'Do both apps add a Finder Quick Look preview?', a: 'Yes — both ship a Quick Look extension so you can press Space on a .md file and see it rendered. Markdown Better View also adds rich thumbnails.' },
+  { q: 'What does Markdown Better View add over MacMD Viewer?', a: 'Five themes with real dark mode, a table of contents with scrollspy, instant find with a match count, a distraction-free reading mode, folder→native tabs, and live reload on save — features MacMD Viewer does not advertise.' },
+  { q: 'Are both native (not Electron)?', a: 'Yes. Both are native macOS apps (AppKit/SwiftUI), not web-wrapped, so they launch instantly and stay light.' },
+];
+const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+---
+
+<BaseLayout
+  title="Markdown Better View vs MacMD Viewer — same job, half the price"
+  description="Both are native macOS Markdown viewers with a Quick Look extension. Markdown Better View is $9.99 vs MacMD Viewer's $19.99 — plus themes, table of contents, find, reading mode, folder tabs and live reload."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Markdown Better View vs MacMD Viewer</h1>
+      <p>
+        Two native macOS Markdown <em>viewers</em>, both with a Finder Quick Look extension and no
+        subscription. The difference comes down to price and reading features.
+      </p>
+    </div>
+
+    <p class="verdict">
+      <strong>Short version:</strong> they do the same core job, but Markdown Better View is
+      <strong>$9.99 vs $19.99</strong> and adds themes, a table of contents, instant find, reading mode,
+      folder→tabs and live reload. Choose MacMD Viewer if you specifically prefer it; otherwise
+      Markdown Better View gives you more for half the price.
+    </p>
+
+    <div class="cmp">
+      <table>
+        <thead><tr><th></th><th class="us">Markdown Better View</th><th>MacMD Viewer</th></tr></thead>
+        <tbody>
+          <tr><td>Price</td><td class="us">$9.99 one-time</td><td>$19.99 one-time</td></tr>
+          <tr><td>Native macOS viewer</td><td class="us">Yes</td><td>Yes</td></tr>
+          <tr><td>Quick Look preview</td><td class="us">Yes</td><td>Yes</td></tr>
+          <tr><td>Quick Look thumbnails</td><td class="us">Yes</td><td>?</td></tr>
+          <tr><td>Mermaid diagrams</td><td class="us">Yes</td><td>Yes</td></tr>
+          <tr><td>Math (KaTeX)</td><td class="us">Yes</td><td>?</td></tr>
+          <tr><td>Five themes · dark mode</td><td class="us">Yes</td><td>?</td></tr>
+          <tr><td>Table of contents · find</td><td class="us">Yes</td><td>?</td></tr>
+          <tr><td>Reading mode</td><td class="us">Yes</td><td>?</td></tr>
+          <tr><td>Folder → native tabs</td><td class="us">Yes</td><td>?</td></tr>
+          <tr><td>Live reload on save</td><td class="us">Yes</td><td>?</td></tr>
+          <tr><td>Subscription</td><td class="us">No</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote">“?” = MacMD Viewer doesn’t clearly state it. Verified June 2026.</p>
+
+    <h2>When to choose MacMD Viewer</h2>
+    <p>
+      MacMD Viewer is a tidy, genuinely native viewer with a Quick Look extension and Mermaid support,
+      and at ~2 MB it’s tiny. If you already own it, or you simply prefer its look and feel, it’s a fine
+      reader — this isn’t a knock on it.
+    </p>
+
+    <h2>When to choose Markdown Better View</h2>
+    <p>
+      If you want the same native, no-subscription reading experience for <strong>half the price</strong>
+      — plus five themes, a table of contents with scrollspy, instant find, a distraction-free reading
+      mode, folder→tabs and live reload on save — Markdown Better View is the better value at a one-time
+      $9.99. See the full <a href="/blog/best-markdown-viewer-mac">best Markdown viewers for Mac</a> roundup.
+    </p>
+
+    <h2>FAQ</h2>
+    <dl class="faq">{faqs.map((f) => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}</dl>
+
+    <div class="cta-row">
+      <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+      <a class="muted-link" href="/blog/best-markdown-viewer-mac">Compare all viewers →</a>
+      <a class="muted-link" href="/">Markdown Better View →</a>
+    </div>
+  </div>
+  <Footer slot="footer" />
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</BaseLayout>
+
+<style>
+  .verdict { font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--soft); border: 1px solid var(--winln); border-radius: 12px; padding: 16px 18px; margin: 0 0 28px; max-width: 72ch; }
+  .cmp { border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; background: #fff; box-shadow: 0 14px 36px rgba(40,70,120,.08); }
+  .cmp table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 520px; }
+  .cmp th, .cmp td { padding: 11px 16px; text-align: left; border-top: 1px solid var(--line); }
+  .cmp thead th { border-top: 0; font-size: 13px; color: var(--slate); }
+  .cmp th:first-child, .cmp td:first-child { color: var(--slate); width: 40%; }
+  .cmp thead .us { color: var(--accent-deep); }
+  .cmp td.us { background: var(--win); font-weight: 600; border-left: 1px solid var(--winln); border-right: 1px solid var(--winln); }
+  .cmp thead .us { background: var(--win); border-left: 1px solid var(--winln); border-right: 1px solid var(--winln); border-top-left-radius: 10px; border-top-right-radius: 10px; }
+  .tnote { font-size: 12.5px; color: var(--muted); margin: 8px 2px 0; }
+  .page h2 { font-family: var(--serif); font-size: 22px; letter-spacing: -.01em; margin: 30px 0 10px; }
+  .page > p { font-size: 16px; line-height: 1.65; color: var(--slate); max-width: 72ch; }
+  .page > p strong { color: var(--ink); }
+  .faq dt { font-weight: 700; color: var(--ink); margin-top: 16px; }
+  .faq dd { margin: 6px 0 0; color: var(--slate); line-height: 1.6; max-width: 72ch; }
+  .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 32px; }
+  .muted-link { color: var(--accent-deep); font-size: 14px; }
+</style>

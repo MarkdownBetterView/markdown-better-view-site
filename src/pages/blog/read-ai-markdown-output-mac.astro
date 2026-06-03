@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+// Niche/informational: reading AI-generated Markdown (Claude, Cursor, ChatGPT)
+// on a Mac. Growing, under-covered intent. Soft CTA, honest, internal links.
+const faqs = [
+  { q: 'Why does AI-generated Markdown look messy in a text editor?', a: 'AI tools emit GitHub-Flavored Markdown — headings, tables, fenced code, Mermaid diagrams and LaTeX math. In a plain text editor you see the raw syntax (#, |, ```), not the rendered result. A Markdown viewer renders it the way it was meant to look.' },
+  { q: 'How do I quickly read a .md file an AI tool generated?', a: 'Press Space on it in Finder for a Quick Look preview, or open it in a Markdown viewer. With live reload, the view updates the moment the agent rewrites the file — so you can watch a plan or report take shape.' },
+  { q: 'Can I read Mermaid diagrams and math from AI output?', a: 'Yes, if your viewer renders them. Markdown Better View renders Mermaid diagrams and KaTeX math inline, so an AI-generated architecture diagram or equation shows as a real diagram, not code.' },
+  { q: 'Do I need an editor to read AI Markdown?', a: 'No. If you are only reading the output (not editing it), a viewer is faster and lighter — open the file or a whole folder of agent output as tabs, and use the table of contents to navigate long documents.' },
+];
+const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+---
+
+<BaseLayout
+  title="How to Read AI / Claude / Cursor Markdown Output on a Mac"
+  description="AI tools generate piles of Markdown — plans, reports, diagrams. Here's how to read it rendered (Mermaid, math, code) on a Mac, with Finder Quick Look and live reload."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Reading AI Markdown output on a Mac</h1>
+      <p>
+        Claude, Cursor, ChatGPT and coding agents generate a lot of Markdown — plans, summaries,
+        READMEs, design docs — full of <strong>Mermaid diagrams</strong>, <strong>math</strong>, tables
+        and code. Here’s how to read it the way it was meant to look, fast.
+      </p>
+    </div>
+
+    <p class="verdict">
+      <strong>Short version:</strong> don’t read AI Markdown as raw text. Press <kbd>Space</kbd> in
+      Finder for a rendered Quick Look preview, or open it in a viewer with <strong>live reload</strong>
+      so it updates as the agent writes — diagrams, equations and code rendered, not <code>```</code>.
+    </p>
+
+    <h2>The problem: AI emits Markdown, editors show raw syntax</h2>
+    <p>
+      Modern AI tools default to GitHub-Flavored Markdown because it’s compact and structured. That’s
+      great — until you open the file and get a wall of <code>#</code>, <code>|</code> and
+      <code>```mermaid</code> fences. A flowchart the model drew is just code; an equation is just
+      LaTeX. To actually <em>read</em> it, you need it rendered.
+    </p>
+
+    <h2>Read it rendered — two fast ways</h2>
+    <ol class="steps">
+      <li><strong>Quick Look.</strong> Select the <code>.md</code> in Finder and press <kbd>Space</kbd>.
+        With a Markdown Quick Look extension installed, you get the rendered document instantly — no app
+        to open. (See the <a href="/blog/markdown-quicklook-mac">Quick Look setup guide</a>.)</li>
+      <li><strong>Live reload.</strong> Open the file in a viewer that watches it. As the agent rewrites
+        the file — a plan being refined, a report growing — the view updates on every save. You watch it
+        take shape instead of re-opening it.</li>
+    </ol>
+
+    <h2>Diagrams, math and code — rendered inline</h2>
+    <p>
+      The payoff with AI output specifically: <strong>Mermaid</strong> flowcharts and sequence diagrams
+      render as real diagrams, <strong>KaTeX</strong> math renders as equations, and fenced code gets
+      syntax highlighting across 30+ languages. A generated architecture doc reads like a finished
+      document, not a code dump. For long outputs, a table of contents with scrollspy lets you jump
+      between sections, and folder→tabs opens a whole directory of agent output at once.
+    </p>
+
+    <h2>A fit for the job</h2>
+    <p>
+      <strong>Markdown Better View</strong> is built for exactly this: a fast, native macOS viewer with
+      a Quick Look extension, live reload, Mermaid, KaTeX, syntax highlighting, a table of contents and
+      folder→tabs — for a one-time $9.99, no subscription, no tracking (your files never leave your Mac).
+      It’s a reader, not an editor, which is the point when you’re consuming AI output rather than
+      writing it. See the <a href="/blog/best-markdown-viewer-mac">best Markdown viewers for Mac</a>.
+    </p>
+
+    <h2>FAQ</h2>
+    <dl class="faq">{faqs.map((f) => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}</dl>
+
+    <div class="cta-row">
+      <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+      <a class="muted-link" href="/">Markdown Better View →</a>
+    </div>
+  </div>
+  <Footer slot="footer" />
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</BaseLayout>
+
+<style>
+  .verdict { font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--soft); border: 1px solid var(--winln); border-radius: 12px; padding: 16px 18px; margin: 0 0 28px; max-width: 74ch; }
+  .page h2 { font-family: var(--serif); font-size: 22px; letter-spacing: -.01em; margin: 30px 0 10px; }
+  .page > p { font-size: 16px; line-height: 1.65; color: var(--slate); max-width: 74ch; }
+  .page > p strong { color: var(--ink); }
+  .steps { max-width: 74ch; padding-left: 22px; }
+  .steps li { font-size: 16px; line-height: 1.6; color: var(--slate); margin: 10px 0; }
+  .steps li strong { color: var(--ink); }
+  kbd { font-family: var(--mono); font-size: 12px; background: var(--soft); color: var(--accent-deep); border: 1px solid #d6e4f6; border-radius: 6px; padding: 1px 6px; }
+  .faq dt { font-weight: 700; color: var(--ink); margin-top: 16px; }
+  .faq dd { margin: 6px 0 0; color: var(--slate); line-height: 1.6; max-width: 74ch; }
+  .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 32px; }
+  .muted-link { color: var(--accent-deep); font-size: 14px; }
+</style>
