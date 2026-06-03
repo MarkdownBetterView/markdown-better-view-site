@@ -85,11 +85,11 @@ const faqLd = {
           <tr><td>Anybox Markdown Preview</td><td>$2.99 once</td><td>Quick Look only</td><td>Yes</td><td>No</td><td>?</td><td>No</td></tr>
           <tr><td>PreviewMarkdown</td><td>Free</td><td>Quick Look only</td><td>Yes + thumbnails</td><td>No</td><td>?</td><td>No</td></tr>
           <tr><td>QLMarkdown</td><td>Free (open source)</td><td>Quick Look only</td><td>Yes*</td><td>No</td><td>?</td><td>No</td></tr>
-          <tr><td>Glance</td><td>Free (open source)</td><td>Quick Look (many types)</td><td>Yes</td><td>No</td><td>?</td><td>No</td></tr>
+          <tr><td>Glance</td><td>Free (open source)</td><td>Quick Look (many types)†</td><td>Yes</td><td>No</td><td>?</td><td>No</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="tnote">“?” = the vendor doesn’t clearly state it. *QLMarkdown’s Homebrew cask is deprecated (it is unsigned and fails Gatekeeper).</p>
+    <p class="tnote">“?” = the vendor doesn’t clearly state it. *QLMarkdown’s Homebrew cask is deprecated (unsigned, fails Gatekeeper). †Glance’s original is archived and was removed from the App Store; only a community fork is maintained, and it’s unsigned (needs a Gatekeeper/quarantine workaround).</p>
 
     <h2>Full reading apps</h2>
     <p>
@@ -117,7 +117,9 @@ const faqLd = {
       <code>.md</code> files. They’re great when all you want is to press Space in Finder — but they’re
       not standalone reading apps (no table of contents, find, reading mode or tabs), and QLMarkdown’s
       Homebrew cask is deprecated because it isn’t signed/notarized. <strong>Glance</strong> (free, open
-      source) previews many file types via Quick Look, Markdown included.
+      source) previews many file types via Quick Look, Markdown included — but the original was archived
+      and pulled from the App Store; only a community fork is maintained, and it’s unsigned, so you have
+      to bypass Gatekeeper (a quarantine workaround) to install it.
     </p>
 
     <h2>A writer’s previewer</h2>
