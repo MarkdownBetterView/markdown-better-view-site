@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+const guides = [
+  { href: '/blog/best-markdown-viewer-mac', title: 'Best Markdown Viewer for Mac (2026)', desc: 'An honest comparison of the macOS apps that render Markdown — price, Quick Look, Mermaid, subscription.' },
+  { href: '/blog/markdown-quicklook-mac', title: 'Preview Markdown in Finder with Quick Look', desc: 'Step-by-step: install and enable a Quick Look extension, get rendered previews and thumbnails — and fix raw-text Quick Look.' },
+  { href: '/blog/read-ai-markdown-output-mac', title: 'Reading AI Markdown output on a Mac', desc: 'Read Claude / Cursor / ChatGPT Markdown — Mermaid, math, code — rendered, with Quick Look and live reload.' },
+];
+const comparisons = [
+  { href: '/vs/marked', title: 'vs Marked', desc: 'Reader with Quick Look vs a writer’s previewer — one-time $9.99 vs subscription.' },
+  { href: '/vs/macmd-viewer', title: 'vs MacMD Viewer', desc: 'Same native viewer + Quick Look, half the price.' },
+  { href: '/vs/typora', title: 'vs Typora', desc: 'Reader vs WYSIWYG editor — which fits if you mainly read.' },
+  { href: '/vs/free-quicklook-options', title: 'vs free Quick Look options', desc: 'What $9.99 buys over free plugins and the free viewer QuickMD.' },
+];
+---
+
+<BaseLayout
+  title="Guides & comparisons — Markdown Better View"
+  description="Guides and honest comparisons for reading Markdown on a Mac: the best viewers, Finder Quick Look setup, reading AI output, and how Markdown Better View compares."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Guides &amp; comparisons</h1>
+      <p>Reading Markdown on a Mac — how-to guides and honest comparisons.</p>
+    </div>
+
+    <h2>Guides</h2>
+    <ul class="cards">
+      {guides.map((p) => (
+        <li><a href={p.href}><strong>{p.title}</strong><span>{p.desc}</span></a></li>
+      ))}
+    </ul>
+
+    <h2>Comparisons</h2>
+    <ul class="cards">
+      {comparisons.map((p) => (
+        <li><a href={p.href}><strong>{p.title}</strong><span>{p.desc}</span></a></li>
+      ))}
+    </ul>
+  </div>
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .page h2 { font-family: var(--serif); font-size: 22px; letter-spacing: -.01em; margin: 28px 0 12px; }
+  .page > p { font-size: 16px; line-height: 1.6; color: var(--slate); }
+  .cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cards li a { display: block; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #fff;
+    box-shadow: 0 10px 26px rgba(40,70,120,.06); transition: box-shadow .15s, border-color .15s; }
+  .cards li a:hover { border-color: var(--winln); box-shadow: 0 16px 36px rgba(40,70,120,.12); }
+  .cards strong { display: block; font-size: 16px; color: var(--ink); }
+  .cards span { display: block; margin-top: 6px; font-size: 14px; line-height: 1.55; color: var(--slate); }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+</style>
