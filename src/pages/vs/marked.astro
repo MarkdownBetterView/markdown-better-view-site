@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+// Honest comparison landing page targeting "marked 3 alternative",
+// "marked subscription alternative". Marked is a *previewer* (live preview
+// beside your editor), not an editor — and Marked 3 pushes subscription.
+// Facts verified 2026-06 against markedapp.com; keep them current.
+const faqs = [
+  {
+    q: 'Is Markdown Better View an editor like the apps Marked previews for?',
+    a: 'No. It is a viewer — it opens and renders Markdown, it does not edit it. But because it live-reloads on save, it also covers the previewer job: edit in any editor and the view updates instantly.',
+  },
+  {
+    q: 'Does Marked require a subscription?',
+    a: 'Marked 3 leads with a subscription (about $2.99/month or $29.99/year introductory). A permanent unlock exists but costs several times more. Marked 2 is still sold as a one-time $14.99. Markdown Better View is a one-time $9.99 with no subscription.',
+  },
+  {
+    q: 'Can Markdown Better View preview a file I edit in another app?',
+    a: 'Yes. Live reload re-renders the document on every save, so it works as a live preview next to your editor — without pairing to a specific editor or a subscription.',
+  },
+  {
+    q: 'Does it show Markdown in Finder with Quick Look?',
+    a: 'Yes — press Space on any .md file for a rendered preview, plus rich thumbnails in every folder. Marked does not ship a Quick Look extension.',
+  },
+  {
+    q: 'Can it export to DOCX or EPUB like Marked?',
+    a: 'No. Markdown Better View exports to PDF and prints, but it is a reader, not a publishing tool. If you need DOCX/EPUB/RTF export, proofreading, or writer tooling, Marked is purpose-built for that.',
+  },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="Markdown Better View vs Marked — a one-time $9.99 alternative for reading"
+  description="Marked 3 is a subscription previewer for writers. If you mainly read Markdown, Markdown Better View is a fast, native viewer with Quick Look — one-time $9.99, no subscription."
+>
+  <Nav slot="nav" />
+
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Markdown Better View vs Marked</h1>
+      <p>
+        Both render your Markdown beautifully — but they are built for different jobs. Marked is a
+        <em>previewer</em> for writers mid-document (with heavy-duty export); Markdown Better View is a
+        <em>viewer</em> for reading, with Quick Look and a one-time price.
+      </p>
+    </div>
+
+    <p class="verdict">
+      <strong>Short version:</strong> if you need DOCX/EPUB export, proofreading and writer tooling,
+      get <strong>Marked</strong>. If you just want to <strong>read</strong> Markdown fast — AI output,
+      READMEs, docs — with Quick Look and no subscription, <strong>Markdown Better View</strong> is the
+      one-time $9.99 fit (and it live-previews too).
+    </p>
+
+    <div class="cmp">
+      <table>
+        <thead>
+          <tr><th></th><th class="us">Markdown Better View</th><th>Marked 3</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Type</td><td class="us">Viewer (+ live previewer)</td><td>Previewer for your editor</td></tr>
+          <tr><td>Price</td><td class="us">$9.99 one-time</td><td>$2.99/mo · $29.99/yr (unlock costs more)</td></tr>
+          <tr><td>Subscription</td><td class="us">No</td><td>Yes (primary)</td></tr>
+          <tr><td>Live reload on save</td><td class="us">Yes</td><td>Yes</td></tr>
+          <tr><td>Quick Look + thumbnails</td><td class="us">Yes</td><td>No</td></tr>
+          <tr><td>Open a folder as native tabs</td><td class="us">Yes</td><td>No</td></tr>
+          <tr><td>Reading mode</td><td class="us">Yes</td><td>Speed-reading overlay</td></tr>
+          <tr><td>Math (KaTeX) · Mermaid</td><td class="us">Yes</td><td>Yes</td></tr>
+          <tr><td>Export PDF · Print</td><td class="us">Yes</td><td>Yes</td></tr>
+          <tr><td>Export DOCX · EPUB · RTF</td><td class="us">No</td><td>Yes</td></tr>
+          <tr><td>Proofreading · writer tools</td><td class="us">No</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When to choose Marked</h2>
+    <p>
+      Marked is excellent and purpose-built for <strong>writing</strong>. Choose it if you draft long
+      documents and need advanced export (DOCX, EPUB, RTF), proofreading, custom processors, or the
+      polished writer tooling Brett Terpstra has refined over years. It pairs with your editor and
+      previews live — that is its job, and it does it well.
+    </p>
+
+    <h2>When to choose Markdown Better View</h2>
+    <p>
+      Choose Markdown Better View if you mostly <strong>read</strong> Markdown rather than write it:
+      AI agent output (Claude, Cursor, ChatGPT generate piles of <code>.md</code>), READMEs, notes,
+      and docs other people send you. You get a fast native viewer, Quick Look previews and thumbnails
+      in Finder, a table of contents, instant find, folder→tabs, KaTeX and Mermaid — for a
+      <strong>one-time $9.99, no subscription</strong>. And with live reload it still previews a file
+      you edit elsewhere, so for reading-plus-preview it replaces Marked at a fraction of the cost.
+    </p>
+
+    <h2>FAQ</h2>
+    <dl class="faq">
+      {faqs.map((f) => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}
+    </dl>
+
+    <div class="cta-row">
+      <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+      <a class="muted-link" href="/comparison">See where it fits →</a>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</BaseLayout>
+
+<style>
+  .verdict { font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--soft);
+    border: 1px solid var(--winln); border-radius: 12px; padding: 16px 18px; margin: 0 0 28px; max-width: 70ch; }
+  .cmp { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff;
+    box-shadow: 0 14px 36px rgba(40,70,120,.08); margin-bottom: 8px; }
+  .cmp table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .cmp th, .cmp td { padding: 11px 16px; text-align: left; border-top: 1px solid var(--line); }
+  .cmp thead th { border-top: 0; font-size: 13px; color: var(--slate); }
+  .cmp th:first-child, .cmp td:first-child { color: var(--slate); width: 34%; }
+  .cmp thead .us { color: var(--accent-deep); }
+  .cmp td.us { background: var(--win); font-weight: 600; border-left: 1px solid var(--winln);
+    border-right: 1px solid var(--winln); }
+  .cmp thead .us { background: var(--win); border-left: 1px solid var(--winln);
+    border-right: 1px solid var(--winln); border-top-left-radius: 10px; border-top-right-radius: 10px; }
+  .page h2 { font-family: var(--serif); font-size: 22px; letter-spacing: -.01em; margin: 32px 0 10px; }
+  .page > p { font-size: 16px; line-height: 1.65; color: var(--slate); max-width: 70ch; }
+  .faq dt { font-weight: 700; color: var(--ink); margin-top: 16px; }
+  .faq dd { margin: 6px 0 0; color: var(--slate); line-height: 1.6; max-width: 70ch; }
+  .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 32px; }
+  .muted-link { color: var(--accent-deep); font-size: 14px; }
+</style>
