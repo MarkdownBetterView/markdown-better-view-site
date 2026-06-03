@@ -140,6 +140,13 @@ const faqLd = {
       with QuickMD or a Quick Look utility if features matter less, and pick Marked if you’re a writer.
     </p>
 
+    <h2>Related comparisons &amp; guides</h2>
+    <ul class="related">
+      <li><a href="/vs/marked">Markdown Better View vs Marked</a> · <a href="/vs/macmd-viewer">vs MacMD Viewer</a></li>
+      <li><a href="/vs/typora">vs Typora</a> · <a href="/vs/free-quicklook-options">vs free Quick Look options</a></li>
+      <li><a href="/blog/markdown-quicklook-mac">Quick Look setup guide</a> · <a href="/blog/read-ai-markdown-output-mac">Reading AI Markdown output</a></li>
+    </ul>
+
     <h2>FAQ</h2>
     <dl class="faq">
       {faqs.map((f) => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}
@@ -176,4 +183,7 @@ const faqLd = {
   .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 32px; }
   .muted-link { color: var(--accent-deep); font-size: 14px; }
   .dated { display: block; margin-top: 8px; font-size: 13px; color: var(--muted); }
+  .related { max-width: 74ch; padding-left: 22px; }
+  .related li { margin: 7px 0; font-size: 15px; color: var(--slate); }
+  .related a { color: var(--accent-deep); }
 </style>
