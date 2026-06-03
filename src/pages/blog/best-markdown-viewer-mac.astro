@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+// Pillar roundup targeting "best markdown viewer mac". Honest, current, and
+// upfront about which apps do which job. Facts verified June 2026 against each
+// vendor's site / App Store; "?" where the vendor doesn't state it. Re-check
+// before major edits — prices and features change.
+const faqs = [
+  {
+    q: 'What is the best Markdown viewer for Mac?',
+    a: 'For reading Markdown — not editing it — with Finder Quick Look, a table of contents, instant find and live reload, Markdown Better View is the pick at a one-time $9.99. MacMD Viewer is a capable alternative but costs about twice as much; QuickMD is a good free option if you do not need a Quick Look extension; and the free Quick Look-only utilities (Anybox Markdown Preview, PreviewMarkdown, QLMarkdown) preview in Finder but are not full reading apps.',
+  },
+  {
+    q: 'Which Mac Markdown app has a Quick Look extension?',
+    a: 'Markdown Better View, MacMD Viewer, Anybox Markdown Preview, PreviewMarkdown and QLMarkdown all add a Finder Quick Look preview for .md files. Markdown Better View and PreviewMarkdown also add rich thumbnails. Marked does not ship a Quick Look extension.',
+  },
+  {
+    q: 'Is there a free Markdown viewer for Mac?',
+    a: 'Yes. QuickMD is a free native viewer with themes, tabs, LaTeX and Mermaid. QLMarkdown and Glance are free open-source Quick Look generators (note QLMarkdown’s Homebrew cask is deprecated because it is unsigned). PreviewMarkdown is a free Quick Look extension app. Paid apps add polish, support and features like live reload, reading mode and folder-as-tabs.',
+  },
+  {
+    q: 'Do I need Marked to read Markdown on a Mac?',
+    a: 'No. Marked is a previewer built for writers — it shows a live preview next to your editor and exports to DOCX/EPUB/RTF. Marked 3 is also a subscription now. If you mainly read Markdown, a dedicated viewer is a better fit and a one-time purchase.',
+  },
+  {
+    q: 'Does Markdown Better View require a subscription?',
+    a: 'No. It is a one-time $9.99 purchase with no subscription and no tracking — sandboxed, with remote network blocked so your documents never leave your Mac.',
+  },
+];
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="Best Markdown Viewer for Mac (2026) — honest comparison"
+  description="The best macOS Markdown viewers compared honestly: Markdown Better View, MacMD Viewer, QuickMD, Marked, Anybox Markdown Preview, PreviewMarkdown, QLMarkdown and Glance — price, Quick Look, live reload, Mermaid and subscription."
+>
+  <Nav slot="nav" />
+
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Best Markdown Viewer for Mac (2026)</h1>
+      <p>
+        An honest comparison of the macOS apps that <em>render</em> Markdown — for reading it, not
+        writing it. We weighed price, whether they add a Finder <strong>Quick Look</strong> preview,
+        live reload on save, Mermaid and math, and whether they lock you into a subscription.
+        <span class="dated">Facts verified June 2026; vendors change — tell us if something is out of date.</span>
+      </p>
+    </div>
+
+    <p class="verdict">
+      <strong>Short answer:</strong> if you want to <em>read</em> Markdown with Quick Look, a table of
+      contents, instant find and live reload — for a one-time price, no subscription —
+      <strong>Markdown Better View ($9.99)</strong> is the pick. <strong>MacMD Viewer</strong> is a
+      solid alternative at $19.99; <strong>QuickMD</strong> is the best free standalone viewer; the free
+      Quick Look-only utilities are great if all you need is a Finder preview; and <strong>Marked</strong>
+      is for writers who export, not readers.
+    </p>
+
+    <div class="cmp">
+      <table>
+        <thead>
+          <tr>
+            <th>App</th><th>Price</th><th>Type</th><th>Quick Look</th>
+            <th>Live reload</th><th>Mermaid · math</th><th>Subscription</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="us">
+            <td>Markdown Better View</td><td>$9.99 once</td><td>Viewer (+ live preview)</td>
+            <td>Yes + thumbnails</td><td>Yes</td><td>Yes · Yes</td><td>No</td>
+          </tr>
+          <tr><td>MacMD Viewer</td><td>$19.99 once</td><td>Viewer</td><td>Yes</td><td>?</td><td>Yes · Yes</td><td>No</td></tr>
+          <tr><td>QuickMD</td><td>Free</td><td>Viewer</td><td>?</td><td>?</td><td>Yes · Yes</td><td>No</td></tr>
+          <tr><td>Marked 3</td><td>$2.99/mo · Marked 2 $14.99 once</td><td>Previewer (writers)</td><td>No</td><td>Yes</td><td>Yes · Yes</td><td>Yes</td></tr>
+          <tr><td>Anybox Markdown Preview</td><td>$2.99 once</td><td>Quick Look only</td><td>Yes</td><td>No</td><td>?</td><td>No</td></tr>
+          <tr><td>PreviewMarkdown</td><td>Free</td><td>Quick Look only</td><td>Yes + thumbnails</td><td>No</td><td>?</td><td>No</td></tr>
+          <tr><td>QLMarkdown</td><td>Free (open source)</td><td>Quick Look only</td><td>Yes*</td><td>No</td><td>?</td><td>No</td></tr>
+          <tr><td>Glance</td><td>Free (open source)</td><td>Quick Look (many types)</td><td>Yes</td><td>No</td><td>?</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote">“?” = the vendor doesn’t clearly state it. *QLMarkdown’s Homebrew cask is deprecated (it is unsigned and fails Gatekeeper).</p>
+
+    <h2>Full reading apps</h2>
+    <p>
+      <strong>Markdown Better View</strong> ($9.99, one-time) is built for reading: open any
+      <code>.md</code> and it renders instantly, with five themes and real dark mode, a table of
+      contents with scrollspy, instant find, a distraction-free reading mode, and folder→native tabs.
+      It ships a Quick Look extension <em>and</em> thumbnails, renders KaTeX math and Mermaid, and live
+      reloads on save — so it also does the previewer’s job. Sandboxed, no tracking, no subscription.
+    </p>
+    <p>
+      <strong>MacMD Viewer</strong> ($19.99, one-time) is a tidy SwiftUI viewer that also ships a Quick
+      Look extension and renders Mermaid and syntax-highlighted code. It’s a good choice if you don’t
+      mind paying roughly double for a similar reading experience.
+    </p>
+    <p>
+      <strong>QuickMD</strong> (free, App Store + Homebrew) is the strongest free standalone viewer:
+      custom themes, native tabs, a recent-documents sidebar, LaTeX and Mermaid, and PDF export. If your
+      budget is zero and you don’t specifically need a Finder Quick Look extension, start here.
+    </p>
+
+    <h2>Quick Look-only utilities</h2>
+    <p>
+      <strong>Anybox Markdown Preview</strong> ($2.99), <strong>PreviewMarkdown</strong> (free) and
+      <strong>QLMarkdown</strong> (free, open source) add a Finder Quick Look preview for
+      <code>.md</code> files. They’re great when all you want is to press Space in Finder — but they’re
+      not standalone reading apps (no table of contents, find, reading mode or tabs), and QLMarkdown’s
+      Homebrew cask is deprecated because it isn’t signed/notarized. <strong>Glance</strong> (free, open
+      source) previews many file types via Quick Look, Markdown included.
+    </p>
+
+    <h2>A writer’s previewer</h2>
+    <p>
+      <strong>Marked</strong> is excellent, but it’s a different tool: a live preview that pairs with
+      <em>your</em> editor, with heavy-duty export (DOCX, EPUB, RTF), proofreading and writer tooling.
+      Marked 3 moved to a subscription. If you write long documents and export, choose Marked; if you
+      mainly read, a viewer fits better. See our deeper take in
+      <a href="/vs/marked">Markdown Better View vs Marked</a>.
+    </p>
+
+    <h2>The verdict</h2>
+    <p>
+      For the most common job — <strong>reading</strong> Markdown (AI agent output, READMEs, notes,
+      docs) with Finder Quick Look and a real reading experience — <strong>Markdown Better View</strong>
+      is the best balance of features and price: a full viewer plus Quick Look, thumbnails and live
+      reload, for a one-time $9.99 with no subscription. Pay more for MacMD if you prefer it, go free
+      with QuickMD or a Quick Look utility if features matter less, and pick Marked if you’re a writer.
+    </p>
+
+    <h2>FAQ</h2>
+    <dl class="faq">
+      {faqs.map((f) => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}
+    </dl>
+
+    <div class="cta-row">
+      <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+      <a class="muted-link" href="/">See Markdown Better View →</a>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</BaseLayout>
+
+<style>
+  .verdict { font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--soft);
+    border: 1px solid var(--winln); border-radius: 12px; padding: 16px 18px; margin: 0 0 28px; max-width: 74ch; }
+  .cmp { border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; background: #fff;
+    box-shadow: 0 14px 36px rgba(40,70,120,.08); }
+  .cmp table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 720px; }
+  .cmp th, .cmp td { padding: 10px 14px; text-align: left; border-top: 1px solid var(--line); white-space: nowrap; }
+  .cmp thead th { border-top: 0; font-size: 12.5px; color: var(--slate); }
+  .cmp td:first-child { font-weight: 600; color: var(--ink); }
+  .cmp tr.us td { background: var(--win); }
+  .cmp tr.us td:first-child { color: var(--accent-deep); }
+  .tnote { font-size: 12.5px; color: var(--muted); margin: 8px 2px 0; }
+  .page h2 { font-family: var(--serif); font-size: 22px; letter-spacing: -.01em; margin: 32px 0 10px; }
+  .page > p { font-size: 16px; line-height: 1.65; color: var(--slate); max-width: 74ch; }
+  .page > p strong { color: var(--ink); }
+  .faq dt { font-weight: 700; color: var(--ink); margin-top: 16px; }
+  .faq dd { margin: 6px 0 0; color: var(--slate); line-height: 1.6; max-width: 74ch; }
+  .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 32px; }
+  .muted-link { color: var(--accent-deep); font-size: 14px; }
+  .dated { display: block; margin-top: 8px; font-size: 13px; color: var(--muted); }
+</style>
