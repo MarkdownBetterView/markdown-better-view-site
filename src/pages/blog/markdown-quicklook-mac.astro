@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+// How-to guide targeting "markdown quicklook mac", "preview md in finder",
+// "open md file mac". Informational, evergreen, with the quick-look demo video.
+// Honest about free options; soft CTA. Facts verified June 2026.
+const faqs = [
+  {
+    q: 'Why does macOS show .md files as plain text in Quick Look?',
+    a: 'Out of the box macOS has no Markdown Quick Look generator, so it falls back to its built-in plain-text preview and you see the raw # and * characters. Installing an app that ships a Quick Look extension adds a rendered preview for .md files.',
+  },
+  {
+    q: 'How do I enable a Markdown Quick Look extension?',
+    a: 'Install a Markdown app that includes one, then open System Settings → General → Login Items & Extensions, find Quick Look under Extensions, and turn on the app’s extension. Then select a .md file in Finder and press Space.',
+  },
+  {
+    q: 'Quick Look still shows raw text after installing — how do I fix it?',
+    a: 'Toggle the extension off and on in System Settings, then reset Quick Look from Terminal with “qlmanage -r && qlmanage -r cache” and, if needed, log out or restart. Also remove any old duplicate copies of the app (extra copies in Downloads or build folders confuse the extension registry).',
+  },
+  {
+    q: 'Can I get rendered Markdown thumbnails in Finder too?',
+    a: 'Yes, if the app ships a thumbnail extension. Enable it the same way under Login Items & Extensions, and Finder shows a rendered thumbnail for each .md file instead of a generic icon.',
+  },
+  {
+    q: 'Is there a free way to preview Markdown in Finder?',
+    a: 'Yes — free Quick Look extensions exist (for example PreviewMarkdown, or the open-source QLMarkdown, though its Homebrew cask is deprecated because it is unsigned). They preview in Finder but are not full reading apps. A paid viewer like Markdown Better View adds a no-setup extension plus a table of contents, find, themes, reading mode and live reload.',
+  },
+];
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="How to Preview Markdown in Finder with Quick Look (Mac, 2026)"
+  description="Press Space on a .md file and see it rendered, not raw. Step-by-step: install a Quick Look extension, enable it in System Settings, get rendered previews and thumbnails — plus how to fix raw-text Quick Look."
+>
+  <Nav slot="nav" />
+
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>How to Preview Markdown in Finder with Quick Look</h1>
+      <p>
+        Press <kbd>Space</kbd> on a file in Finder and macOS shows a Quick Look preview — but for a
+        <code>.md</code> file you usually get <em>raw text</em> (the <code>#</code> and <code>*</code>
+        characters), because macOS has no built-in Markdown renderer. Here’s how to get a properly
+        rendered preview, and thumbnails too.
+        <span class="dated">Verified on macOS 15 (Sequoia), June 2026.</span>
+      </p>
+    </div>
+
+    <video class="guide-vid" muted loop autoplay playsinline preload="auto" poster="/videos/quick-look.png">
+      <source src="/videos/quick-look.webm" type="video/webm" />
+      <source src="/videos/quick-look.mp4" type="video/mp4" />
+    </video>
+
+    <h2>The short version</h2>
+    <p>
+      Install a Markdown app that ships a <strong>Quick Look extension</strong>, enable it in System
+      Settings, then press <kbd>Space</kbd> on any <code>.md</code> file. That’s it — no Terminal, no
+      config files.
+    </p>
+
+    <h2>Step by step</h2>
+    <ol class="steps">
+      <li><strong>Install a Quick Look–capable Markdown app.</strong> <a href="/">Markdown Better View</a>
+        ships both a preview and a thumbnail extension; free options like PreviewMarkdown work too (see below).</li>
+      <li><strong>Enable the extension.</strong> Open <strong>System Settings → General → Login Items &amp;
+        Extensions</strong>, scroll to <strong>Extensions</strong>, click the ⓘ next to <strong>Quick Look</strong>,
+        and turn the app’s extension on. <span class="muted">(On older macOS it’s System Settings → Extensions, or System Preferences → Extensions.)</span></li>
+      <li><strong>Preview a file.</strong> Select any <code>.md</code> file in Finder and press <kbd>Space</kbd>.
+        You should see it rendered — headings, lists, code blocks, tables.</li>
+      <li><strong>Turn on thumbnails (optional).</strong> Enable the app’s thumbnail extension the same way.
+        Finder then shows a rendered thumbnail for each Markdown file instead of a generic icon.</li>
+    </ol>
+
+    <h2>If Quick Look still shows raw text</h2>
+    <p>This is common and almost always a registration glitch, not a broken app. In order:</p>
+    <ol class="steps">
+      <li>Toggle the extension <strong>off and on</strong> in Login Items &amp; Extensions.</li>
+      <li>Reset Quick Look from Terminal: <code class="codeblk">qlmanage -r &amp;&amp; qlmanage -r cache</code></li>
+      <li>Remove <strong>old duplicate copies</strong> of the app (extra copies in Downloads or build
+        folders confuse macOS’ extension registry — keep one copy in <code>/Applications</code>).</li>
+      <li>Still stuck? <strong>Log out or restart</strong> — it clears the extension daemon’s cache.</li>
+    </ol>
+
+    <h2>Free vs paid</h2>
+    <p>
+      Free Quick Look extensions exist: <strong>PreviewMarkdown</strong> (free) and the open-source
+      <strong>QLMarkdown</strong> (free, though its Homebrew cask is deprecated because it isn’t
+      signed/notarized). They add a Finder preview and nothing more. If you mainly read Markdown and
+      want a no-setup extension <em>plus</em> a full reader — table of contents, instant find, themes,
+      reading mode, folder→tabs and live reload — <strong>Markdown Better View</strong> is a one-time
+      $9.99 with no subscription. See the full <a href="/blog/best-markdown-viewer-mac">best Markdown
+      viewers for Mac</a> roundup.
+    </p>
+
+    <h2>FAQ</h2>
+    <dl class="faq">
+      {faqs.map((f) => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}
+    </dl>
+
+    <div class="cta-row">
+      <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+      <a class="muted-link" href="/blog/best-markdown-viewer-mac">Compare Mac Markdown viewers →</a>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+  <script>
+    // Kick the muted demo clip into playing once it scrolls into view.
+    const v = document.querySelector<HTMLVideoElement>('video.guide-vid');
+    if (v) {
+      const play = () => { v.muted = true; v.play().catch(() => {}); };
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? play() : v.pause())),
+          { threshold: 0.25 }).observe(v);
+      } else play();
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  .guide-vid { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: #0d1117;
+    border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 44px rgba(40,70,120,.14);
+    margin: 4px 0 8px; display: block; }
+  .page h2 { font-family: var(--serif); font-size: 22px; letter-spacing: -.01em; margin: 30px 0 10px; }
+  .page > p { font-size: 16px; line-height: 1.65; color: var(--slate); max-width: 72ch; }
+  .page > p strong { color: var(--ink); }
+  .steps { max-width: 72ch; padding-left: 22px; }
+  .steps li { font-size: 16px; line-height: 1.6; color: var(--slate); margin: 10px 0; }
+  .steps li strong { color: var(--ink); }
+  .muted { color: var(--muted); font-size: 14px; }
+  kbd { font-family: var(--mono); font-size: 12px; background: var(--soft); color: var(--accent-deep);
+    border: 1px solid #d6e4f6; border-radius: 6px; padding: 1px 6px; }
+  .codeblk { font-family: var(--mono); font-size: 13px; background: #f1f5fb; border: 1px solid var(--line);
+    border-radius: 8px; padding: 2px 8px; color: #2f3e58; }
+  .faq dt { font-weight: 700; color: var(--ink); margin-top: 16px; }
+  .faq dd { margin: 6px 0 0; color: var(--slate); line-height: 1.6; max-width: 72ch; }
+  .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 32px; }
+  .muted-link { color: var(--accent-deep); font-size: 14px; }
+  .dated { display: block; margin-top: 8px; font-size: 13px; color: var(--muted); }
+</style>
