@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import FeatureSection from '../components/FeatureSection.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+---
+
+<BaseLayout
+  title="Markdown Better View — a fast, native macOS Markdown viewer"
+  description="A fast, native macOS Markdown viewer. Themes, live reload, table of contents, instant find, Quick Look, math, and Mermaid — sandboxed, with no tracking."
+>
+  <Nav slot="nav" />
+  <Hero />
+
+  <section id="features">
+    <FeatureSection
+      label="// quick look"
+      title="Preview without opening the app."
+      body="Press Space in Finder and read your Markdown rendered, right there — plus rich thumbnails in every folder."
+      side="normal"
+      video="quick-look"
+    />
+    <FeatureSection
+      label="// live reload"
+      title="Save, and it’s already updated."
+      body="Edit in any editor — the view reloads instantly. No refresh, no flicker."
+      side="alt"
+      video="live-reload"
+    />
+    <FeatureSection
+      label="// themes"
+      title="Five themes. Real dark mode."
+      body="Dracula, Solarized & more — switch live; follows the system appearance."
+      side="normal"
+      video="themes"
+    />
+    <FeatureSection
+      label="// navigate"
+      title="Built for long documents."
+      body="Table of contents with scrollspy, instant find with match count, distraction-free reading mode."
+      side="alt"
+      video="navigate"
+    />
+    <FeatureSection
+      label="// open"
+      title="A whole folder, in tabs."
+      body="Point it at a folder — every Markdown file opens as a native tab."
+      side="normal"
+      video="folder-tabs"
+    />
+    <FeatureGrid />
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>

@@ -1,0 +1,69 @@
+---
+// "Three ways to read Markdown" — positioning, not a feature matrix.
+// Replaces the old per-competitor comparison grid: educational + evergreen
+// (no cells to keep verified, no "?" gaps, no rival ratings). Competitor
+// names stay in prose so the page still earns the comparison-intent search
+// traffic. Tone: each tool does a different job — Markdown Better View owns
+// the "just read it" job.
+const modes = [
+  {
+    kind: 'Editor',
+    job: 'write & edit',
+    who: 'Typora · Obsidian · MacDown',
+    body:
+      'Full editing, plugins, sync — powerful, but heavier. Overkill when all you want is to read a file someone sent you.',
+    us: false,
+  },
+  {
+    kind: 'Previewer',
+    job: 'edit elsewhere, preview live',
+    who: 'Marked 2 · Marked 3',
+    body:
+      'A live preview window beside your editor. Brilliant while you write — but it pairs with an editor, and Marked 3 is now a subscription.',
+    us: false,
+  },
+  {
+    kind: 'Viewer',
+    job: 'open & read — done',
+    who: 'Markdown Better View',
+    body:
+      'Double-click a .md and read it rendered — native, instant, one-time. Themes, table of contents, instant find, Quick Look, reading mode, folder → tabs. Editing in another app? Live reload re-renders on every save — so it does the previewer\'s job too, without pairing to an editor or a subscription.',
+    us: true,
+  },
+];
+---
+
+<section class="rm">
+  <div class="rm-grid">
+    {
+      modes.map((m) => (
+        <div class={m.us ? 'rm-card us' : 'rm-card'}>
+          <div class="rm-kind">{m.kind}</div>
+          <div class="rm-job">{m.job}</div>
+          <div class="rm-who">{m.who}</div>
+          <p>{m.body}</p>
+          {m.us && (
+            <div class="rm-tags">
+              <span class="rm-tag">one-time · $9.99</span>
+              <span class="rm-tag">viewer + live previewer</span>
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="rm-wedge">
+    <div class="rm-wedge-copy">
+      <b>No subscription. Ever.</b>
+      <span>One-time $9.99 — buy it once, it's yours to keep.</span>
+    </div>
+    <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+  </div>
+
+  <p class="rm-foot">
+    Typora, Obsidian, and Marked are excellent at their jobs. Markdown Better View
+    is built for <em>reading</em> — and with live reload on save, it quietly covers
+    the previewing job too, one-time.
+  </p>
+</section>

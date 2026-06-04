@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Support — Markdown Better View"
+  description="Get help with Markdown Better View. Email support and answers to common questions about file types, image access, and system requirements."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Support</h1>
+      <p>
+        Questions, bugs, or feature requests? Email us — a real person reads every
+        message.
+      </p>
+    </div>
+
+    <div class="glass card">
+      <p style="margin:0;font-size:17px">
+        <strong>Email:</strong>
+        <a href="mailto:support@markdownbetterview.com">support@markdownbetterview.com</a>
+      </p>
+    </div>
+
+    <div class="prose">
+      <h2>Frequently asked questions</h2>
+
+      <h3>Which file types does it open?</h3>
+      <p>
+        Markdown files with the <code>.md</code>, <code>.markdown</code>,
+        <code>.mdown</code>, and <code>.mkd</code> extensions.
+      </p>
+
+      <h3>My images aren’t showing — why?</h3>
+      <p>
+        Markdown Better View is sandboxed, so macOS only grants it access to the file
+        you opened. When a document references sibling images in its folder, the app
+        asks for one-time access to that folder; grant it and the images appear. Your
+        choice is remembered securely so you won’t be asked again for that folder.
+      </p>
+
+      <h3>What are the system requirements?</h3>
+      <p>
+        macOS 15 or later. The app is a universal binary that runs natively on both
+        Apple Silicon and Intel Macs.
+      </p>
+
+      <h3>How do I report a bug?</h3>
+      <p>
+        Email <a href="mailto:support@markdownbetterview.com">support@markdownbetterview.com</a>
+        with what you were doing, the document if you can share it, and your macOS
+        version. The more detail, the faster we can fix it.
+      </p>
+
+      <h3>Where can I see what’s new?</h3>
+      <p>
+        See the <a href="/changelog">changelog</a> for release notes and version history.
+      </p>
+    </div>
+  </div>
+  <Footer slot="footer" />
+</BaseLayout>
