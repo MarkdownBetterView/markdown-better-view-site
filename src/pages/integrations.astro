@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Integrations — Markdown Better View"
+  description="Use Markdown Better View as your Markdown viewer from the terminal and AI coding tools. Install the mbv CLI via curl or Homebrew."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Integrations</h1>
+      <p>
+        Make your terminal and tools open Markdown in Markdown Better View — it
+        live-reloads on every save, so you edit anywhere and the preview follows.
+        macOS only.
+      </p>
+    </div>
+
+    <div class="prose">
+      <h2>Install the <code>mbv</code> command</h2>
+      <p><strong>Homebrew</strong> (recommended):</p>
+      <pre><code>brew install xxBedy/tap/mbv</code></pre>
+      <p><strong>Or curl</strong>:</p>
+      <pre><code>curl -fsSL https://markdownbetterview.com/cli_setup | bash</code></pre>
+      <p>Prefer to read it first?</p>
+      <pre><code>curl -fsSL https://markdownbetterview.com/cli_setup -o mbv-setup.sh
+less mbv-setup.sh
+bash mbv-setup.sh</code></pre>
+
+      <h2>Use it</h2>
+      <pre><code>mbv README.md      # open/refresh in MBV (keeps your focus)
+mbv -f README.md   # bring MBV to the front
+some-cmd | mbv -   # pipe Markdown from stdin</code></pre>
+
+      <h2>Any other tool</h2>
+      <p>Anything that can run a command can use MBV directly:</p>
+      <pre><code>open -g -a "Markdown Better View" path/to/file.md</code></pre>
+      <p>
+        The <code>-g</code> keeps focus where it is. Requires
+        <a href="https://markdownbetterview.com">Markdown Better View</a> from the
+        App Store.
+      </p>
+    </div>
+  </div>
+  <Footer slot="footer" />
+</BaseLayout>
