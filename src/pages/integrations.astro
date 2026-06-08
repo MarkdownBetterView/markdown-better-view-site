@@ -20,6 +20,17 @@ import Footer from '../components/Footer.astro';
     </div>
 
     <div class="prose">
+      <h2>AI coding tools (one command)</h2>
+      <p>Auto-open Markdown in MBV as your AI assistant writes it — detects and
+         configures Claude Code, Cursor, and Windsurf, and prints setup steps for
+         VS Code and JetBrains.</p>
+      <pre><code>curl -fsSL https://markdownbetterview.com/setup | bash</code></pre>
+      <p>Read it first, or undo:</p>
+      <pre><code>curl -fsSL https://markdownbetterview.com/setup -o mbv-ai-setup.sh
+less mbv-ai-setup.sh
+bash mbv-ai-setup.sh
+curl -fsSL https://markdownbetterview.com/setup | bash -s -- --uninstall</code></pre>
+
       <h2>Install the <code>mbv</code> command</h2>
       <p><strong>Homebrew</strong> (recommended):</p>
       <pre><code>brew install xxBedy/tap/mbv</code></pre>
