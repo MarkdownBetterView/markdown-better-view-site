@@ -37,7 +37,7 @@ cat > "$DEST" <<'MBV_EOF'
 #
 # mbv — open a Markdown file in Markdown Better View.
 #
-# A thin wrapper over `open -g -a "Markdown Better View"`. It does NOT render
+# A thin wrapper over `open -a "Markdown Better View"`. It does NOT render
 # anything: LaunchServices opens the file (works for any path; the sandbox grant
 # is mediated by the user-initiated open), and MBV's live-reload then re-renders
 # on every save. The mdbv:// scheme is intentionally NOT used here — it is
@@ -47,21 +47,25 @@ cat > "$DEST" <<'MBV_EOF'
 set -euo pipefail
 
 APP="Markdown Better View"
-VERSION="1.0.0"
-BG="-g"   # background by default: don't steal focus from the caller
+VERSION="1.1.0"
+BG=""   # foreground by default: bring MBV to the front
 
 usage() {
   cat <<'EOF'
 mbv — open a Markdown file in Markdown Better View
 
 Usage:
-  mbv <file.md>     Open/refresh the file in MBV (background; keeps your focus)
-  mbv -f <file.md>  Foreground: bring MBV to the front
-  mbv -             Read Markdown from stdin and open it
-  mbv --help        Show this help
-  mbv --version     Print version
+  mbv <file.md>            Open/refresh the file in MBV (foreground)
+  mbv -b <file.md>         Background: keep your current app focus
+  mbv --background <file>  Same as -b
+  mbv -                    Read Markdown from stdin and open it
+  mbv --help               Show this help
+  mbv --version            Print version
 
 After opening once, MBV live-reloads on every save — edit in any tool.
+
+AI hooks and automation scripts should use -b/--background so the viewer
+appears on screen without stealing keyboard focus from your editor.
 EOF
 }
 
@@ -69,7 +73,7 @@ FILE=""
 STDIN=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -f|--foreground) BG=""; shift ;;
+    -b|--background) BG="-g"; shift ;;
     -h|--help)       usage; exit 0 ;;
     --version)       echo "mbv ${VERSION}"; exit 0 ;;
     -)               STDIN=1; shift ;;
