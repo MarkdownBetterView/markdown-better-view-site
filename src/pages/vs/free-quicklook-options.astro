@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+// "free markdown quicklook" intent — honest about what free gets you vs $9.99.
+// Facts verified June 2026. QLMarkdown cask deprecated (unsigned); Glance original
+// archived + unsigned fork; QuickMD is a capable free standalone viewer.
+const faqs = [
+  { q: 'Is there a free Markdown Quick Look extension for Mac?', a: 'Yes — PreviewMarkdown is free, and QLMarkdown is free and open source (though its Homebrew cask is deprecated because it is unsigned). Anybox Markdown Preview is $2.99. They add a Finder preview but are not full reading apps.' },
+  { q: 'Is there a free Markdown viewer app, not just a Quick Look plugin?', a: 'Yes — QuickMD is a free native viewer with themes, tabs, LaTeX and Mermaid. If you do not need a no-setup Quick Look extension plus reading features like find and reading mode, it is a good free starting point.' },
+  { q: 'Why pay $9.99 when free options exist?', a: 'For a signed, notarized app with no Gatekeeper workarounds, a no-setup Quick Look extension and thumbnails, and a full reading experience — table of contents, instant find, reading mode, folder→tabs, live reload — in one maintained app. Free plugins give you a preview and nothing more.' },
+  { q: 'Are the free Quick Look plugins safe to install?', a: 'The code is generally fine, but some are unsigned: QLMarkdown’s Homebrew cask is deprecated for failing Gatekeeper, and Glance’s maintained fork needs a quarantine workaround. That means bypassing macOS’ notarization check — only do it for software you trust.' },
+];
+const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+---
+
+<BaseLayout
+  title="Markdown Better View vs free Quick Look options"
+  description="Free Markdown Quick Look plugins (QLMarkdown, PreviewMarkdown, Glance) and the free viewer QuickMD vs Markdown Better View — what $9.99 buys over free, honestly."
+>
+  <Nav slot="nav" />
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Markdown Better View vs free Quick Look options</h1>
+      <p>
+        Free ways to preview Markdown in Finder exist — Quick Look plugins like QLMarkdown,
+        PreviewMarkdown and Glance, and the free viewer QuickMD. Here’s what they get you, and what a
+        one-time $9.99 adds. <span class="dated">Verified June 2026.</span>
+      </p>
+    </div>
+
+    <p class="verdict">
+      <strong>Short version:</strong> if all you want is a Finder preview and your budget is zero, the
+      free options work — <strong>QuickMD</strong> is a capable free viewer, and free plugins add a
+      Quick Look preview. Markdown Better View ($9.99) is for when you want a signed, no-fuss app with a
+      Quick Look extension <em>and</em> a real reading experience: themes, table of contents, find,
+      reading mode, folder→tabs and live reload.
+    </p>
+
+    <div class="cmp">
+      <table>
+        <thead><tr><th></th><th class="us">Markdown Better View</th><th>QuickMD (free)</th><th>Free QL plugins*</th></tr></thead>
+        <tbody>
+          <tr><td>Price</td><td class="us">$9.99 once</td><td>Free</td><td>Free / $2.99</td></tr>
+          <tr><td>Standalone reader app</td><td class="us">Yes</td><td>Yes</td><td>No (preview only)</td></tr>
+          <tr><td>Quick Look in Finder</td><td class="us">Yes + thumbnails</td><td>?</td><td>Yes</td></tr>
+          <tr><td>Table of contents · find</td><td class="us">Yes</td><td>?</td><td>No</td></tr>
+          <tr><td>Reading mode</td><td class="us">Yes</td><td>No</td><td>No</td></tr>
+          <tr><td>Folder → native tabs</td><td class="us">Yes</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Live reload on save</td><td class="us">Yes</td><td>?</td><td>No</td></tr>
+          <tr><td>Math (KaTeX) · Mermaid</td><td class="us">Yes</td><td>Yes</td><td>?</td></tr>
+          <tr><td>Signed &amp; notarized</td><td class="us">Yes</td><td>Yes (App Store)</td><td>Often not**</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote">*Free QL plugins = QLMarkdown, PreviewMarkdown, Anybox Markdown Preview ($2.99), Glance. **QLMarkdown’s Homebrew cask is deprecated (unsigned); Glance’s maintained fork needs a Gatekeeper/quarantine workaround. “?” = not clearly stated by the vendor.</p>
+
+    <h2>When free is enough</h2>
+    <p>
+      If you only need to press <kbd>Space</kbd> in Finder and glance at a rendered <code>.md</code>,
+      a free Quick Look plugin does the job. If you want a free <em>app</em> with themes and Mermaid,
+      <strong>QuickMD</strong> is a genuinely good free viewer — start there if your budget is zero.
+    </p>
+
+    <h2>When Markdown Better View is worth $9.99</h2>
+    <p>
+      Pay once for a single <strong>signed, notarized</strong> app — no <code>xattr</code> quarantine
+      workarounds, no deprecated casks — that bundles the Quick Look extension <em>and</em> thumbnails
+      <em>and</em> a full reader: five themes, table of contents with scrollspy, instant find, reading
+      mode, folder→tabs and live reload. One app, maintained, no fuss. See the
+      <a href="/blog/best-markdown-viewer-mac">full roundup</a> or the
+      <a href="/blog/markdown-quicklook-mac">Quick Look setup guide</a>.
+    </p>
+
+    <h2>FAQ</h2>
+    <dl class="faq">{faqs.map((f) => (<><dt>{f.q}</dt><dd>{f.a}</dd></>))}</dl>
+
+    <div class="cta-row">
+      <span class="mbv-cta">⌘ Coming soon — Mac App Store</span>
+      <a class="muted-link" href="/blog/best-markdown-viewer-mac">Compare all viewers →</a>
+      <a class="muted-link" href="/">Markdown Better View →</a>
+    </div>
+  </div>
+  <Footer slot="footer" />
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</BaseLayout>
+
+<style>
+  .verdict { font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--soft); border: 1px solid var(--winln); border-radius: 12px; padding: 16px 18px; margin: 0 0 28px; max-width: 72ch; }
+  .cmp { border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; background: #fff; box-shadow: 0 14px 36px rgba(40,70,120,.08); }
+  .cmp table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 640px; }
+  .cmp th, .cmp td { padding: 10px 14px; text-align: left; border-top: 1px solid var(--line); }
+  .cmp thead th { border-top: 0; font-size: 12.5px; color: var(--slate); }
+  .cmp th:first-child, .cmp td:first-child { color: var(--slate); width: 30%; }
+  .cmp thead .us { color: var(--accent-deep); }
+  .cmp td.us { background: var(--win); font-weight: 600; border-left: 1px solid var(--winln); border-right: 1px solid var(--winln); }
+  .cmp thead .us { background: var(--win); border-left: 1px solid var(--winln); border-right: 1px solid var(--winln); border-top-left-radius: 10px; border-top-right-radius: 10px; }
+  .tnote { font-size: 12.5px; color: var(--muted); margin: 8px 2px 0; max-width: 74ch; line-height: 1.5; }
+  .page h2 { font-family: var(--serif); font-size: 22px; letter-spacing: -.01em; margin: 30px 0 10px; }
+  .page > p { font-size: 16px; line-height: 1.65; color: var(--slate); max-width: 72ch; }
+  .page > p strong { color: var(--ink); }
+  kbd { font-family: var(--mono); font-size: 12px; background: var(--soft); color: var(--accent-deep); border: 1px solid #d6e4f6; border-radius: 6px; padding: 1px 6px; }
+  .faq dt { font-weight: 700; color: var(--ink); margin-top: 16px; }
+  .faq dd { margin: 6px 0 0; color: var(--slate); line-height: 1.6; max-width: 72ch; }
+  .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 32px; }
+  .muted-link { color: var(--accent-deep); font-size: 14px; }
+  .dated { display: block; margin-top: 8px; font-size: 13px; color: var(--muted); }
+</style>

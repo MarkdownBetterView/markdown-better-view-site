@@ -54,4 +54,19 @@ import FeatureGrid from '../components/FeatureGrid.astro';
   </section>
 
   <Footer slot="footer" />
+
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Markdown Better View',
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'macOS 15.0 or later',
+      description:
+        'A fast, native macOS Markdown viewer with Quick Look, live reload, themes, table of contents, instant find, math and Mermaid — one-time, no subscription.',
+      url: 'https://markdownbetterview.com',
+      offers: { '@type': 'Offer', price: '9.99', priceCurrency: 'USD' },
+    })}
+  />
 </BaseLayout>
