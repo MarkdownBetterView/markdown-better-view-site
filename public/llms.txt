@@ -1,0 +1,30 @@
+# Markdown Better View
+
+> A fast, native macOS app for reading Markdown - not editing it. Open any .md and see it rendered: live reload, Follow Edits, Quick Look in Finder, five themes with a real dark mode, math and diagrams. One-time purchase, no subscription, no tracking. macOS 15+.
+
+Markdown Better View is a read-only Markdown viewer for macOS, built for reading rather than editing. With live reload and "Follow Edits" it also works as a live preview next to your editor - the view repaints the instant a file changes on disk and scrolls to whatever just changed, which makes it handy for watching an AI assistant write Markdown in real time. It is sandboxed, has no tracking and no accounts, and a content rule blocks remote network access, so documents never leave the Mac.
+
+## Key facts
+- Platform: macOS 15 (Sequoia) or later; universal binary (Apple Silicon + Intel)
+- Type: Markdown viewer (read-only) - it is not an editor
+- Price: one-time US$9.99, no subscription
+- Privacy: sandboxed, no tracking, no accounts, remote network blocked
+- Rendering: GitHub-Flavored Markdown via cmark-gfm
+
+## Features
+- Quick Look in Finder: press Space on any .md for a rendered preview, plus rich thumbnails
+- Live reload the moment a file changes on disk
+- Follow Edits: the preview scrolls to the latest change
+- Five themes with a real dark mode that follows the system appearance
+- Table of contents with scrollspy, instant find with a live match count, distraction-free reading mode
+- Open a whole folder as native tabs
+- KaTeX math and Mermaid diagrams
+- Syntax highlighting for 30+ languages
+
+## Links
+- Mac App Store: https://apps.apple.com/app/id6773928994
+- Website: https://markdownbetterview.com
+- Support: https://markdownbetterview.com/support
+- Privacy policy: https://markdownbetterview.com/privacy
+- Comparisons (vs Typora, Marked, Obsidian, Quick Look): https://markdownbetterview.com/comparison
+- Blog: https://markdownbetterview.com/blog

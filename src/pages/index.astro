@@ -66,7 +66,30 @@ import FeatureGrid from '../components/FeatureGrid.astro';
       description:
         'A fast, native macOS Markdown viewer with Quick Look, live reload, themes, table of contents, instant find, math and Mermaid — one-time, no subscription.',
       url: 'https://markdownbetterview.com',
-      offers: { '@type': 'Offer', price: '9.99', priceCurrency: 'USD' },
+      downloadUrl: 'https://apps.apple.com/app/id6773928994',
+      image: 'https://markdownbetterview.com/og.png',
+      screenshot: 'https://markdownbetterview.com/og.png',
+      author: { '@type': 'Person', name: 'Martin Bednář' },
+      offers: {
+        '@type': 'Offer',
+        price: '9.99',
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        url: 'https://apps.apple.com/app/id6773928994',
+      },
+      featureList: [
+        'Quick Look preview and rich thumbnails in Finder',
+        'Live reload on save',
+        'Follow Edits — the preview scrolls to whatever just changed',
+        'Five themes with a real dark mode that follows the system',
+        'Table of contents with scrollspy',
+        'Instant find with a live match count',
+        'Distraction-free reading mode',
+        'Open a whole folder as native tabs',
+        'KaTeX math and Mermaid diagrams',
+        'Syntax highlighting for 30+ languages',
+        'Sandboxed, no tracking, remote network blocked',
+      ],
     })}
   />
 </BaseLayout>

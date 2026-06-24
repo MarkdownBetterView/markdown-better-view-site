@@ -12,6 +12,7 @@ const {
 } = Astro.props;
 
 const og = new URL('/og.png', Astro.site).href;
+const siteUrl = Astro.site?.href ?? 'https://markdownbetterview.com/';
 ---
 
 <!doctype html>
@@ -30,6 +31,28 @@ const og = new URL('/og.png', Astro.site).href;
     <link rel="icon" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Organization',
+            '@id': siteUrl + '#org',
+            name: 'Markdown Better View',
+            url: siteUrl,
+            logo: siteUrl + 'icon.png',
+          },
+          {
+            '@type': 'WebSite',
+            '@id': siteUrl + '#website',
+            name: 'Markdown Better View',
+            url: siteUrl,
+            publisher: { '@id': siteUrl + '#org' },
+          },
+        ],
+      })}
+    />
     <!-- Privacy-friendly analytics by Plausible (cookieless, no banner needed) -->
     <script is:inline async src="https://plausible.io/js/pa-fDQhk8UbB1KpJ0gxg8MCo.js"></script>
     <script is:inline>
