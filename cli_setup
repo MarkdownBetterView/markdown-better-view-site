@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+#
+# Markdown Better View — install the `mbv` command-line tool.
+# Usage:
+#   curl -fsSL https://markdownbetterview.com/cli_setup | bash
+#   curl -fsSL https://markdownbetterview.com/cli_setup | bash -s -- --dry-run
+#
+set -euo pipefail
+
+DRY_RUN=false
+[[ "${1:-}" == "--dry-run" ]] && DRY_RUN=true
+
+# Pick the first writable directory on PATH (no sudo).
+pick_dir() {
+  local candidates=()
+  if command -v brew >/dev/null 2>&1; then candidates+=("$(brew --prefix)/bin"); fi
+  candidates+=("/usr/local/bin" "$HOME/.local/bin" "$HOME/bin")
+  local d
+  for d in "${candidates[@]}"; do
+    if [[ -d "$d" && -w "$d" ]]; then echo "$d"; return 0; fi
+    if [[ ! -d "$d" && "$d" == "$HOME/"* ]]; then echo "$d"; return 0; fi
+  done
+  echo "/usr/local/bin"
+}
+
+DIR="$(pick_dir)"
+DEST="$DIR/mbv"
+
+if $DRY_RUN; then
+  echo "Would install mbv → $DEST"
+  exit 0
+fi
+
+mkdir -p "$DIR"
+cat > "$DEST" <<'MBV_EOF'
+#!/usr/bin/env bash
+#
+# mbv — open a Markdown file in Markdown Better View.
+#
+# A thin wrapper over `open -a "Markdown Better View"`. It does NOT render
+# anything: LaunchServices opens the file (works for any path; the sandbox grant
+# is mediated by the user-initiated open), and MBV's live-reload then re-renders
+# on every save. The mdbv:// scheme is intentionally NOT used here — it is
+# restricted to files under $HOME and its line/theme params need in-app source-
+# line scrolling that is not implemented yet.
+#
+set -euo pipefail
+
+APP="Markdown Better View"
+VERSION="1.1.0"
+BG=""   # foreground by default: bring MBV to the front
+
+usage() {
+  cat <<'EOF'
+mbv — open a Markdown file in Markdown Better View
+
+Usage:
+  mbv <file.md>            Open/refresh the file in MBV (foreground)
+  mbv -b <file.md>         Background: keep your current app focus
+  mbv --background <file>  Same as -b
+  mbv -                    Read Markdown from stdin and open it
+  mbv --help               Show this help
+  mbv --version            Print version
+
+After opening once, MBV live-reloads on every save — edit in any tool.
+
+AI hooks and automation scripts should use -b/--background so the viewer
+appears on screen without stealing keyboard focus from your editor.
+EOF
+}
+
+FILE=""
+STDIN=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -b|--background) BG="-g"; shift ;;
+    -h|--help)       usage; exit 0 ;;
+    --version)       echo "mbv ${VERSION}"; exit 0 ;;
+    -)               STDIN=1; shift ;;
+    -*)              echo "mbv: unknown option: $1" >&2; echo "Try 'mbv --help'." >&2; exit 2 ;;
+    *)               FILE="$1"; shift ;;
+  esac
+done
+
+if [[ "$STDIN" -eq 1 ]]; then
+  if [[ -t 0 ]]; then
+    echo "mbv: no input piped to stdin (usage: some-cmd | mbv -)." >&2; exit 2
+  fi
+  # Persisted (no cleanup): `open` is async and MBV needs the file to remain
+  # after this wrapper exits, for live-reload. A unique temp *dir* gives a random
+  # name AND a clean ".md" filename (macOS `mktemp` won't randomize a template
+  # with a suffix after XXXXXX, so we randomize the dir instead).
+  tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/mbv-XXXXXX")"
+  FILE="$tmpdir/document.md"
+  cat > "$FILE"
+elif [[ -z "$FILE" ]]; then
+  echo "mbv: no file given." >&2; echo "Try 'mbv --help'." >&2; exit 2
+elif [[ ! -f "$FILE" ]]; then
+  echo "mbv: no such file: $FILE" >&2; exit 1
+fi
+
+# Resolve to an absolute path. `set -e` does NOT abort on a failed command
+# substitution in an assignment, so guard the `cd` explicitly — otherwise a
+# missing parent dir would silently produce a bogus path.
+dir="$(cd "$(dirname "$FILE")" 2>/dev/null && pwd)" || {
+  echo "mbv: cannot resolve path: $FILE" >&2; exit 1; }
+abs="$dir/$(basename "$FILE")"
+
+# Best-effort install check (no side effects). Warn but continue.
+if ! mdfind "kMDItemCFBundleIdentifier == 'cz.xxbedy.MarkDownBetterView'" 2>/dev/null | grep -q .; then
+  echo "mbv: '$APP' not found — install it from the Mac App Store." >&2
+fi
+
+if [[ "${MBV_DRY_RUN:-0}" == "1" ]]; then
+  if [[ -n "$BG" ]]; then echo "open -g -a $APP $abs"; else echo "open -a $APP $abs"; fi
+  exit 0
+fi
+
+# shellcheck disable=SC2086
+open $BG -a "$APP" "$abs"
+MBV_EOF
+chmod +x "$DEST"
+
+echo "✓ Installed mbv → $DEST"
+case ":$PATH:" in
+  *":$DIR:"*) : ;;
+  *) echo "! $DIR is not on your PATH. Add this to your shell profile:"
+     echo "    export PATH=\"$DIR:\$PATH\"" ;;
+esac
+if ! mdfind "kMDItemCFBundleIdentifier == 'cz.xxbedy.MarkDownBetterView'" 2>/dev/null | grep -q .; then
+  echo "! Markdown Better View is not installed. Get it: https://markdownbetterview.com"
+fi
+echo "Try:  mbv README.md"
