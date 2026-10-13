@@ -1,0 +1,393 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Markdown Better View — AI coding tool integration setup.
+# Usage:
+#   curl -fsSL https://markdownbetterview.com/setup | bash
+#   curl -fsSL https://markdownbetterview.com/setup | bash -s -- --dry-run
+#   curl -fsSL https://markdownbetterview.com/setup | bash -s -- --uninstall
+
+VERSION="1.0.0"
+APP="Markdown Better View"
+MARKER="Markdown Better View"
+
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'
+CYAN='\033[0;36m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'
+
+DRY_RUN=false; UNINSTALL=false; ASSUME_YES=false
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run)   DRY_RUN=true ;;
+    --uninstall) UNINSTALL=true ;;
+    --yes|-y)    ASSUME_YES=true ;;
+    --version)   echo "Markdown Better View setup v${VERSION}"; exit 0 ;;
+    --help|-h)
+      echo "Markdown Better View — AI coding tool integration setup"
+      echo ""
+      echo "  curl -fsSL https://markdownbetterview.com/setup | bash"
+      echo "  curl -fsSL https://markdownbetterview.com/setup | bash -s -- --dry-run"
+      echo "  curl -fsSL https://markdownbetterview.com/setup | bash -s -- --uninstall"
+      echo "  curl -fsSL https://markdownbetterview.com/setup | bash -s -- --yes"
+      exit 0 ;;
+    *) echo -e "${RED}Unknown option: ${arg}${RESET}"; echo "Run with --help."; exit 1 ;;
+  esac
+done
+
+info()    { echo -e "${BLUE}ℹ${RESET}  $1"; }
+success() { echo -e "${GREEN}✓${RESET}  $1"; }
+warn()    { echo -e "${YELLOW}!${RESET}  $1"; }
+step()    { echo -e "${CYAN}▸${RESET}  $1"; }
+
+CHANGES_MADE=0; TOOLS_DETECTED=0; TOOLS_CONFIGURED=0
+
+# MBV_JSON_TOOL is a test seam: force a specific JSON tool (e.g. "python3").
+JSON_TOOL="${MBV_JSON_TOOL:-none}"
+if [[ "$JSON_TOOL" == "none" ]]; then
+  if command -v jq >/dev/null 2>&1; then JSON_TOOL="jq"
+  elif command -v python3 >/dev/null 2>&1; then JSON_TOOL="python3"
+  elif command -v python >/dev/null 2>&1; then JSON_TOOL="python"; fi
+fi
+
+backup_file() {
+  local file="$1"
+  if [[ -f "$file" ]]; then
+    local ts; ts="$(date +%Y%m%d_%H%M%S)"
+    cp "$file" "${file}.bak.${ts}"
+    info "Backed up ${DIM}${file}${RESET} → ${DIM}${file}.bak.${ts}${RESET}"
+  fi
+}
+
+ask_yes_no() {
+  local prompt="$1" answer
+  if $ASSUME_YES; then return 0; fi
+  # MBV_NO_TTY is a test seam: pretend no terminal exists.
+  if [[ -z "${MBV_NO_TTY:-}" ]]; then
+    if [[ -t 0 ]]; then
+      read -r -p "$(echo -e "${BOLD}?${RESET}  ${prompt} [Y/n] ")" answer
+      case "${answer:-Y}" in [Yy]*) return 0 ;; *) return 1 ;; esac
+    fi
+    if [[ -r /dev/tty && -w /dev/tty ]]; then
+      # curl | bash: stdin is the pipe, but the human is on /dev/tty.
+      # Write the prompt there EXPLICITLY — `read -p` sends it to stderr,
+      # and the 2>/dev/null (kept to silence read's own errors) used to
+      # swallow it, leaving the user staring at a silently waiting script.
+      printf '%b' "${BOLD}?${RESET}  ${prompt} [Y/n] " >/dev/tty
+      if read -r answer </dev/tty 2>/dev/null; then
+        case "${answer:-Y}" in [Yy]*) return 0 ;; *) return 1 ;; esac
+      fi
+    fi
+  fi
+  # Truly non-interactive (CI, no controlling terminal): never silently
+  # configure the user's tools. --yes opts back into automation.
+  warn "Non-interactive run — skipped (use --yes to accept automatically)"
+  return 1
+}
+
+file_contains_marker() { grep -q "$MARKER" "$1" 2>/dev/null; }
+
+json_merge() {
+  local file="$1" jq_filter="$2" python_script="$3" tmp
+  tmp="$(mktemp "${TMPDIR:-/tmp}/mbvjson-XXXXXX")"
+  case "$JSON_TOOL" in
+    jq)            if jq "$jq_filter" "$file" > "$tmp" 2>/dev/null; then mv "$tmp" "$file"; return 0; fi ;;
+    python3|python) if $JSON_TOOL -c "$python_script" "$file" > "$tmp" 2>/dev/null; then mv "$tmp" "$file"; return 0; fi ;;
+  esac
+  rm -f "$tmp"; return 1
+}
+
+hook_cmd_stdin_jq() {
+  printf '%s' 'f="$(jq -r '"'"'.tool_input.file_path // empty'"'"' 2>/dev/null)"; case "$f" in *.md|*.markdown) open -g -a "Markdown Better View" "$f" 2>/dev/null;; esac'
+}
+hook_cmd_stdin_python() {
+  printf '%s' 'f="$(python3 -c "import sys,json;print(json.load(sys.stdin).get(\"tool_input\",{}).get(\"file_path\",\"\"))" 2>/dev/null)"; case "$f" in *.md|*.markdown) open -g -a "Markdown Better View" "$f" 2>/dev/null;; esac'
+}
+# Pick the runtime JSON reader at install time: jq when present, else python3.
+# The hook runs on the USER's machine — must work independently of what the
+# installer used for the config merge. Uses JSON_TOOL (already resolved above)
+# so the MBV_JSON_TOOL test seam is honoured here too.
+hook_cmd_stdin() {
+  if [[ "$JSON_TOOL" == "jq" ]]; then hook_cmd_stdin_jq; else hook_cmd_stdin_python; fi
+}
+
+# ── Cursor: afterFileEdit, stdin JSON .file_path ──────────────────────────
+hook_cmd_cursor_jq() {
+  printf '%s' 'f="$(jq -r '"'"'.file_path // empty'"'"' 2>/dev/null)"; case "$f" in *.md|*.markdown) open -g -a "Markdown Better View" "$f" 2>/dev/null;; esac'
+}
+hook_cmd_cursor_python() {
+  printf '%s' 'f="$(python3 -c "import sys,json;print(json.load(sys.stdin).get(\"file_path\",\"\"))" 2>/dev/null)"; case "$f" in *.md|*.markdown) open -g -a "Markdown Better View" "$f" 2>/dev/null;; esac'
+}
+hook_cmd_cursor() {
+  if [[ "$JSON_TOOL" == "jq" ]]; then hook_cmd_cursor_jq; else hook_cmd_cursor_python; fi
+}
+
+# ════════════════ Claude Code ════════════════
+CLAUDE_CONFIG="$HOME/.claude/settings.json"
+detect_claude() { [[ -f "$CLAUDE_CONFIG" ]] || command -v claude >/dev/null 2>&1; }
+claude_configured() { [[ -f "$CLAUDE_CONFIG" ]] && file_contains_marker "$CLAUDE_CONFIG"; }
+
+install_claude() {
+  if claude_configured; then success "Claude Code — already configured, skipping"; return 0; fi
+  if $DRY_RUN; then info "Would add PostToolUse hook to ${DIM}${CLAUDE_CONFIG}${RESET}"; return 0; fi
+  if [[ "$JSON_TOOL" == "none" ]]; then warn "Claude Code — need jq or python to edit JSON; skipped"; return 0; fi
+  mkdir -p "$(dirname "$CLAUDE_CONFIG")"
+  [[ -f "$CLAUDE_CONFIG" ]] || echo '{}' > "$CLAUDE_CONFIG"
+  backup_file "$CLAUDE_CONFIG"
+  local cmd; cmd="$(hook_cmd_stdin)"
+  local python_script
+  python_script=$(cat <<'PYEOF'
+import json,sys,os
+cmd=os.environ["MBV_HOOK_CMD"]
+with open(sys.argv[1]) as f: d=json.load(f)
+d.setdefault("hooks",{}).setdefault("PostToolUse",[]).append(
+  {"matcher":"Write|Edit","hooks":[{"type":"command","command":cmd}]})
+print(json.dumps(d,indent=2))
+PYEOF
+)
+  MBV_HOOK_CMD="$cmd"; export MBV_HOOK_CMD
+  if [[ "$JSON_TOOL" == "jq" ]]; then
+    local tmp; tmp="$(mktemp "${TMPDIR:-/tmp}/mbvjson-XXXXXX")"
+    if jq --arg cmd "$cmd" '.hooks //= {} | .hooks.PostToolUse //= [] | .hooks.PostToolUse += [{"matcher":"Write|Edit","hooks":[{"type":"command","command":$cmd}]}]' "$CLAUDE_CONFIG" > "$tmp" 2>/dev/null; then mv "$tmp" "$CLAUDE_CONFIG"; success "Claude Code — hook added"; CHANGES_MADE=$((CHANGES_MADE+1)); else rm -f "$tmp"; warn "Claude Code — could not edit ${CLAUDE_CONFIG}"; fi
+  else
+    if json_merge "$CLAUDE_CONFIG" "" "$python_script"; then success "Claude Code — hook added"; CHANGES_MADE=$((CHANGES_MADE+1)); else warn "Claude Code — could not edit ${CLAUDE_CONFIG}"; fi
+  fi
+  unset MBV_HOOK_CMD
+}
+
+uninstall_claude() {
+  if ! claude_configured; then info "Claude Code — nothing to remove"; return 0; fi
+  if $DRY_RUN; then info "Would remove the hook from ${DIM}${CLAUDE_CONFIG}${RESET}"; return 0; fi
+  backup_file "$CLAUDE_CONFIG"
+  local jq_filter python_script
+  jq_filter='if .hooks.PostToolUse then .hooks.PostToolUse |= map(select(.hooks|tostring|contains("Markdown Better View")|not)) else . end | if .hooks.PostToolUse==[] then del(.hooks.PostToolUse) else . end'
+  python_script=$(cat <<'PYEOF'
+import json,sys
+with open(sys.argv[1]) as f: d=json.load(f)
+h=d.get("hooks",{})
+if "PostToolUse" in h:
+  h["PostToolUse"]=[x for x in h["PostToolUse"] if "Markdown Better View" not in json.dumps(x)]
+  if not h["PostToolUse"]: del h["PostToolUse"]
+print(json.dumps(d,indent=2))
+PYEOF
+)
+  if json_merge "$CLAUDE_CONFIG" "$jq_filter" "$python_script"; then success "Claude Code — hook removed"; CHANGES_MADE=$((CHANGES_MADE+1)); else warn "Claude Code — could not edit ${CLAUDE_CONFIG}"; fi
+}
+
+# ── Windsurf: post_write_code, stdin JSON .tool_info.file_path ───────────────
+hook_cmd_windsurf_jq() {
+  printf '%s' 'f="$(jq -r '"'"'.tool_info.file_path // empty'"'"' 2>/dev/null)"; case "$f" in *.md|*.markdown) open -g -a "Markdown Better View" "$f" 2>/dev/null;; esac'
+}
+hook_cmd_windsurf_python() {
+  printf '%s' 'f="$(python3 -c "import sys,json;print(json.load(sys.stdin).get(\"tool_info\",{}).get(\"file_path\",\"\"))" 2>/dev/null)"; case "$f" in *.md|*.markdown) open -g -a "Markdown Better View" "$f" 2>/dev/null;; esac'
+}
+hook_cmd_windsurf() {
+  if [[ "$JSON_TOOL" == "jq" ]]; then hook_cmd_windsurf_jq; else hook_cmd_windsurf_python; fi
+}
+
+# ════════════════ Cursor ════════════════
+CURSOR_CONFIG="$HOME/.cursor/hooks.json"
+detect_cursor() { [[ -d "$HOME/.cursor" ]]; }
+cursor_configured() { [[ -f "$CURSOR_CONFIG" ]] && file_contains_marker "$CURSOR_CONFIG"; }
+
+install_cursor() {
+  if cursor_configured; then success "Cursor — already configured, skipping"; return 0; fi
+  if $DRY_RUN; then info "Would add afterFileEdit hook to ${DIM}${CURSOR_CONFIG}${RESET}"; return 0; fi
+  if [[ "$JSON_TOOL" == "none" ]]; then warn "Cursor — need jq or python; skipped"; return 0; fi
+  mkdir -p "$(dirname "$CURSOR_CONFIG")"
+  [[ -f "$CURSOR_CONFIG" ]] || echo '{"version":1}' > "$CURSOR_CONFIG"
+  backup_file "$CURSOR_CONFIG"
+  local cmd; cmd="$(hook_cmd_cursor)"
+  MBV_HOOK_CMD="$cmd"; export MBV_HOOK_CMD
+  local python_script
+  python_script=$(cat <<'PYEOF'
+import json,sys,os
+cmd=os.environ["MBV_HOOK_CMD"]
+with open(sys.argv[1]) as f: d=json.load(f)
+d.setdefault("version",1); d.setdefault("hooks",{}).setdefault("afterFileEdit",[]).append({"command":cmd})
+print(json.dumps(d,indent=2))
+PYEOF
+)
+  if [[ "$JSON_TOOL" == "jq" ]]; then
+    local tmp; tmp="$(mktemp "${TMPDIR:-/tmp}/mbvjson-XXXXXX")"
+    if jq --arg cmd "$cmd" '.version //= 1 | .hooks //= {} | .hooks.afterFileEdit //= [] | .hooks.afterFileEdit += [{"command":$cmd}]' "$CURSOR_CONFIG" > "$tmp" 2>/dev/null; then mv "$tmp" "$CURSOR_CONFIG"; success "Cursor — hook added"; CHANGES_MADE=$((CHANGES_MADE+1)); else rm -f "$tmp"; warn "Cursor — could not edit ${CURSOR_CONFIG}"; fi
+  else
+    if json_merge "$CURSOR_CONFIG" "" "$python_script"; then success "Cursor — hook added"; CHANGES_MADE=$((CHANGES_MADE+1)); else warn "Cursor — could not edit ${CURSOR_CONFIG}"; fi
+  fi
+  unset MBV_HOOK_CMD
+}
+
+uninstall_cursor() {
+  if ! cursor_configured; then info "Cursor — nothing to remove"; return 0; fi
+  if $DRY_RUN; then info "Would remove afterFileEdit hook from ${DIM}${CURSOR_CONFIG}${RESET}"; return 0; fi
+  backup_file "$CURSOR_CONFIG"
+  local jq_filter python_script
+  jq_filter='if .hooks.afterFileEdit then .hooks.afterFileEdit |= map(select(.command|tostring|contains("Markdown Better View")|not)) else . end | if .hooks.afterFileEdit==[] then del(.hooks.afterFileEdit) else . end'
+  python_script=$(cat <<'PYEOF'
+import json,sys
+with open(sys.argv[1]) as f: d=json.load(f)
+h=d.get("hooks",{})
+if "afterFileEdit" in h:
+  h["afterFileEdit"]=[x for x in h["afterFileEdit"] if "Markdown Better View" not in json.dumps(x)]
+  if not h["afterFileEdit"]: del h["afterFileEdit"]
+print(json.dumps(d,indent=2))
+PYEOF
+)
+  if json_merge "$CURSOR_CONFIG" "$jq_filter" "$python_script"; then success "Cursor — hook removed"; CHANGES_MADE=$((CHANGES_MADE+1)); else warn "Cursor — could not edit ${CURSOR_CONFIG}"; fi
+}
+
+# ════════════════ Windsurf ════════════════
+# Real contract: ~/.codeium/windsurf/hooks.json, event post_write_code,
+# stdin JSON .tool_info.file_path (verified: docs.windsurf.com 2026-06-11).
+WINDSURF_CONFIG="$HOME/.codeium/windsurf/hooks.json"
+# Legacy path written by setup.sh prior to this fix; checked only by uninstall.
+WINDSURF_CONFIG_LEGACY="$HOME/Library/Application Support/Windsurf/hooks.json"
+detect_windsurf() { [[ -d "$HOME/.codeium/windsurf" ]] || [[ -d "$HOME/Library/Application Support/Windsurf" ]]; }
+windsurf_configured() { [[ -f "$WINDSURF_CONFIG" ]] && file_contains_marker "$WINDSURF_CONFIG"; }
+
+install_windsurf() {
+  if windsurf_configured; then success "Windsurf — already configured, skipping"; return 0; fi
+  if $DRY_RUN; then info "Would add post_write_code hook to ${DIM}${WINDSURF_CONFIG}${RESET}"; return 0; fi
+  if [[ "$JSON_TOOL" == "none" ]]; then warn "Windsurf — need jq or python; skipped"; return 0; fi
+  mkdir -p "$(dirname "$WINDSURF_CONFIG")"
+  [[ -f "$WINDSURF_CONFIG" ]] || echo '{}' > "$WINDSURF_CONFIG"
+  backup_file "$WINDSURF_CONFIG"
+  local cmd; cmd="$(hook_cmd_windsurf)"
+  MBV_HOOK_CMD="$cmd"; export MBV_HOOK_CMD
+  local python_script
+  python_script=$(cat <<'PYEOF'
+import json,sys,os
+cmd=os.environ["MBV_HOOK_CMD"]
+with open(sys.argv[1]) as f: d=json.load(f)
+d.setdefault("hooks",{}).setdefault("post_write_code",[]).append({"command":cmd,"show_output":False})
+print(json.dumps(d,indent=2))
+PYEOF
+)
+  if [[ "$JSON_TOOL" == "jq" ]]; then
+    local tmp; tmp="$(mktemp "${TMPDIR:-/tmp}/mbvjson-XXXXXX")"
+    if jq --arg cmd "$cmd" '.hooks //= {} | .hooks.post_write_code //= [] | .hooks.post_write_code += [{"command":$cmd,"show_output":false}]' "$WINDSURF_CONFIG" > "$tmp" 2>/dev/null; then mv "$tmp" "$WINDSURF_CONFIG"; success "Windsurf — hook added"; CHANGES_MADE=$((CHANGES_MADE+1)); else rm -f "$tmp"; warn "Windsurf — could not edit ${WINDSURF_CONFIG}"; fi
+  else
+    if json_merge "$WINDSURF_CONFIG" "" "$python_script"; then success "Windsurf — hook added"; CHANGES_MADE=$((CHANGES_MADE+1)); else warn "Windsurf — could not edit ${WINDSURF_CONFIG}"; fi
+  fi
+  unset MBV_HOOK_CMD
+}
+
+uninstall_windsurf() {
+  local removed=false
+  if windsurf_configured; then
+    if $DRY_RUN; then info "Would remove post_write_code hook from ${DIM}${WINDSURF_CONFIG}${RESET}"; return 0; fi
+    backup_file "$WINDSURF_CONFIG"
+    local jq_filter python_script
+    jq_filter='if .hooks.post_write_code then .hooks.post_write_code |= map(select(.command|tostring|contains("Markdown Better View")|not)) else . end | if .hooks.post_write_code==[] then del(.hooks.post_write_code) else . end'
+    python_script=$(cat <<'PYEOF'
+import json,sys
+with open(sys.argv[1]) as f: d=json.load(f)
+h=d.get("hooks",{})
+if "post_write_code" in h:
+  h["post_write_code"]=[x for x in h["post_write_code"] if "Markdown Better View" not in json.dumps(x)]
+  if not h["post_write_code"]: del h["post_write_code"]
+print(json.dumps(d,indent=2))
+PYEOF
+)
+    if json_merge "$WINDSURF_CONFIG" "$jq_filter" "$python_script"; then success "Windsurf — hook removed"; CHANGES_MADE=$((CHANGES_MADE+1)); removed=true; else warn "Windsurf — could not edit ${WINDSURF_CONFIG}"; fi
+  fi
+  # Clean up legacy path (old setup.sh wrote post_cascade_response here).
+  if [[ -f "$WINDSURF_CONFIG_LEGACY" ]] && file_contains_marker "$WINDSURF_CONFIG_LEGACY"; then
+    if $DRY_RUN; then info "Would remove legacy hook from ${DIM}${WINDSURF_CONFIG_LEGACY}${RESET}"; return 0; fi
+    backup_file "$WINDSURF_CONFIG_LEGACY"
+    local jq_legacy python_legacy
+    jq_legacy='if .hooks.post_cascade_response then .hooks.post_cascade_response |= map(select(.command|tostring|contains("Markdown Better View")|not)) else . end | if .hooks.post_cascade_response==[] then del(.hooks.post_cascade_response) else . end'
+    python_legacy=$(cat <<'PYEOF'
+import json,sys
+with open(sys.argv[1]) as f: d=json.load(f)
+h=d.get("hooks",{})
+for k in ("post_cascade_response","post_write_code"):
+  if k in h:
+    h[k]=[x for x in h[k] if "Markdown Better View" not in json.dumps(x)]
+    if not h[k]: del h[k]
+print(json.dumps(d,indent=2))
+PYEOF
+)
+    if json_merge "$WINDSURF_CONFIG_LEGACY" "$jq_legacy" "$python_legacy"; then info "Windsurf — cleaned up legacy path ${DIM}${WINDSURF_CONFIG_LEGACY}${RESET}"; fi
+  fi
+  if ! $removed && ! [[ -f "$WINDSURF_CONFIG_LEGACY" ]] && ! file_contains_marker "$WINDSURF_CONFIG_LEGACY" 2>/dev/null; then
+    info "Windsurf — nothing to remove"
+  fi
+}
+
+# ════════════════ VS Code / Copilot (instructions) ════════════════
+VSCODE_SETTINGS="$HOME/Library/Application Support/Code/User/settings.json"
+detect_vscode() { [[ -d "$HOME/Library/Application Support/Code" ]] || [[ -d "$HOME/.vscode" ]]; }
+install_vscode() {
+  if $DRY_RUN; then info "Would print VS Code setup instructions"; return 0; fi
+  echo ""; info "VS Code / Copilot — one-time manual setup (no native file-edit hook):"
+  echo -e "  ${BOLD}1.${RESET} Install the ${CYAN}Run on Save${RESET} extension:  ${DIM}code --install-extension emeraldwalk.RunOnSave${RESET}"
+  echo -e "  ${BOLD}2.${RESET} Add to settings.json (${DIM}Cmd+Shift+P → Preferences: Open User Settings (JSON)${RESET}):"
+  echo -e "  ${DIM}\"emeraldwalk.runonsave\": { \"commands\": [ { \"match\": \"\\\\.md$\", \"cmd\": \"open -g -a '${APP}' '\\\${file}'\" } ] }${RESET}"
+  echo ""
+}
+uninstall_vscode() { info "VS Code — remove the emeraldwalk.runonsave \"${APP}\" entry from ${DIM}${VSCODE_SETTINGS}${RESET} manually."; }
+
+# ════════════════ JetBrains (instructions) ════════════════
+JETBRAINS_DIR="$HOME/Library/Application Support/JetBrains"
+detect_jetbrains() { [[ -d "$JETBRAINS_DIR" ]]; }
+install_jetbrains() {
+  if $DRY_RUN; then info "Would print JetBrains setup instructions"; return 0; fi
+  echo ""; info "JetBrains — one-time manual setup via File Watchers:"
+  echo -e "  Settings → Tools → File Watchers → + (custom). File type: Markdown."
+  echo -e "  Program: ${DIM}open${RESET}   Arguments: ${DIM}-g -a \"${APP}\" \"\$FilePath\$\"${RESET}"
+  echo ""
+}
+uninstall_jetbrains() { info "JetBrains — remove the \"${APP}\" File Watcher in Settings → Tools → File Watchers."; }
+
+# ════════════════ Aider (detect + skip) ════════════════
+detect_aider() { [[ -f "$HOME/.aider.conf.yml" ]] || command -v aider >/dev/null 2>&1; }
+
+DETECTED_TOOLS=()
+display_name() { case "$1" in claude) echo "Claude Code";; cursor) echo "Cursor";; windsurf) echo "Windsurf";; vscode) echo "VS Code / Copilot";; jetbrains) echo "JetBrains IDE";; *) echo "$1";; esac; }
+
+detect_all() {
+  echo -e "${BOLD}  Scanning for AI coding tools…${RESET}"; echo ""
+  if detect_claude; then success "Claude Code detected"; DETECTED_TOOLS+=("claude"); TOOLS_DETECTED=$((TOOLS_DETECTED+1)); fi
+  if detect_cursor; then success "Cursor detected"; DETECTED_TOOLS+=("cursor"); TOOLS_DETECTED=$((TOOLS_DETECTED+1)); fi
+  if detect_windsurf; then success "Windsurf detected"; DETECTED_TOOLS+=("windsurf"); TOOLS_DETECTED=$((TOOLS_DETECTED+1)); fi
+  if detect_vscode; then success "VS Code detected"; DETECTED_TOOLS+=("vscode"); TOOLS_DETECTED=$((TOOLS_DETECTED+1)); fi
+  if detect_jetbrains; then success "JetBrains IDE detected"; DETECTED_TOOLS+=("jetbrains"); TOOLS_DETECTED=$((TOOLS_DETECTED+1)); fi
+  if detect_aider; then success "Aider detected ${DIM}(skipped — no hook support)${RESET}"; fi
+  # (more tools appended by later tasks)
+  echo ""
+  if [[ ${#DETECTED_TOOLS[@]} -eq 0 ]]; then
+    warn "No supported AI coding tools detected."
+    echo -e "  Supported: Claude Code, Cursor, Windsurf, VS Code, JetBrains."
+    exit 0
+  fi
+}
+
+process_tools() {
+  [[ ${#DETECTED_TOOLS[@]} -eq 0 ]] && return 0   # bash 3.2 set -u: don't expand an empty array
+  local tool name
+  for tool in "${DETECTED_TOOLS[@]}"; do
+    name="$(display_name "$tool")"
+    if $UNINSTALL; then step "Removing from ${BOLD}${name}${RESET}…"; "uninstall_${tool}"
+    elif ask_yes_no "Configure auto-preview for ${BOLD}${name}${RESET}?"; then
+      step "Configuring ${BOLD}${name}${RESET}…"; "install_${tool}"; TOOLS_CONFIGURED=$((TOOLS_CONFIGURED+1))
+    else info "Skipped ${name}"; fi
+  done
+}
+
+print_banner() {
+  echo ""; echo -e "${BOLD}  Markdown Better View${RESET} — AI coding tool setup ${DIM}v${VERSION}${RESET}"
+  echo -e "  ${DIM}Auto-preview Markdown as your AI edits it${RESET}"; echo ""
+  $DRY_RUN && { echo -e "  ${YELLOW}DRY RUN — no files modified${RESET}"; echo ""; }
+  $UNINSTALL && { echo -e "  ${YELLOW}UNINSTALL MODE${RESET}"; echo ""; }
+  return 0
+}
+
+print_summary() {
+  echo ""; echo -e "  ${BOLD}─────────────────────────────${RESET}"; echo ""
+  if $DRY_RUN; then info "Dry run complete. No files modified."
+  elif $UNINSTALL; then [[ $CHANGES_MADE -gt 0 ]] && success "Removed hooks from ${CHANGES_MADE} tool(s)" || info "Nothing to remove"
+  else [[ $CHANGES_MADE -gt 0 ]] && echo -e "  ${GREEN}${BOLD}Done!${RESET} When your AI edits a .md file, ${APP} opens it." || info "No changes made."; fi
+  echo ""; echo -e "  ${DIM}Undo: curl -fsSL https://markdownbetterview.com/setup | bash -s -- --uninstall${RESET}"; echo ""
+}
+
+main() { print_banner; detect_all; process_tools; print_summary; }
+main

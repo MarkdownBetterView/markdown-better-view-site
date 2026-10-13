@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Markdown Better View</title>
+        <item>
+            <title>1.0.10</title>
+            <pubDate>Sat, 10 Oct 2026 15:21:23 +0000</pubDate>
+            <sparkle:version>1.0.10</sparkle:version>
+            <sparkle:shortVersionString>1.0.10</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/MarkdownBetterView/releases/releases/download/v1.0.10/MarkdownBetterView-1.0.10.dmg" length="10539561" type="application/octet-stream" sparkle:edSignature="vUjkBpxxNeW9gxJKPswAj1khi4cuhCUqqEkQuD1DdGVXGLweGO7xeAAi0gBl9brrdqugzAj3yDWXq2OSjsviBw=="/>
+        </item>
+    </channel>
+</rss>
